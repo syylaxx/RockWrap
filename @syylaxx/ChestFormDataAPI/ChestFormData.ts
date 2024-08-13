@@ -52,7 +52,7 @@ export class ChestFormData {
      * @param enchanted Displays a Enchantment Glint on your item, only works using Minecraft Blocks.
      */
 
-	public button(slot: number, itemName: string,description: string[], texture: string, stackSize = 1, enchanted = false) {
+	public button(slot: number, itemName: string[], texture: string, stackSize = 1, enchanted = false) {
 		const
             ID = typeIdToDataId.get(texture) ?? typeIdToID.get(texture)
 
@@ -60,7 +60,7 @@ export class ChestFormData {
             slot,
             1,
             [
-                `stack#${Math.min(Math.max(stackSize, 1) || 1, 99).toString().padStart(2, '0')}§r${itemName ?? ''}§r${description?.length ? `\n§r${description.join('\n§r')}` : ''}`,
+                `stack#${Math.min(Math.max(stackSize, 1) || 1, 99).toString().padStart(2, '0')}§r${itemName?.length ? `\n§r${itemName.join('\n§r')}` : ''}`,
                 (((ID + (ID < 256 ? 0 : number_of_1_16_100_items)) * 65536) + (Number(enchanted) * 32768)) || texture
 	        ]
         )
@@ -74,10 +74,10 @@ export class ChestFormData {
 
 	public glassBorder() {
         for (let i = 0; i <= 9; i++)
-            this.button(i, "", [], "textures/blocks/glass_orange")
+            this.button(i, [], "textures/blocks/glass_orange")
 
-        for (let i = 0; i <= 9; i++)
-            this.button(i - 1 - this.slotCount, "", [], "textures/blocks/glass_orange")
+        for (let i = 1; i <= 10; i++)
+            this.button(i - this.slotCount, [], "textures/blocks/glass_orange")
 
         return this
     }

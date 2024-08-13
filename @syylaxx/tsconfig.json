@@ -1,8 +1,8 @@
 {
-    "compilerOptions": {
-      "target": "ESNext",
-      "module": "commonjs",
-      "strict": true,
-      "strictNullChecks": false,
-    }
-  }  
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "commonjs",
+    "strict": false,
+    "strictNullChecks": false,
+  }
+}
