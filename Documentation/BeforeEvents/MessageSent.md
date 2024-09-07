@@ -57,7 +57,7 @@ Type: *string*
 </h2>
 
 ```ts
-import { AfterEvents } from "api/@syylaxx/Events/AfterEvents";
+import { BeforeEvents } from "api/@syylaxx/Events/BeforeEvents";
 
 BeforeEvents.MessageSent(({ message, player: { name } }) => {
     world.sendMessage(` §b${name}§7 » ${message}`);
