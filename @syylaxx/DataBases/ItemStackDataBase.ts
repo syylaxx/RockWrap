@@ -1,5 +1,5 @@
 import { ItemStack } from "@minecraft/server"
-import { DynamicProperty } from "../DynamicPropertyAPI/DynamicProperty"
+import { DynamicProperty } from "../Managers/DynamicProperty"
 
 export class ItemStackDataBase {
     private identifier: string
@@ -12,8 +12,8 @@ export class ItemStackDataBase {
         const
             { typeId, nameTag, amount, getLore, getComponent } = itemStack,
             { getEnchantments } = getComponent("enchantable"),
-            { damage, maxDurability } = getComponent("durability"),
-            data = { 
+            { damage } = getComponent("durability"),
+            data = {
                 typeId: typeId,
                 nameTag: nameTag,
                 amount: amount,
