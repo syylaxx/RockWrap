@@ -76,7 +76,7 @@ AfterEvents.ItemUsed(({ itemStack }) => {
 });
 ```
 > [!IMPORTANT]
-> Some Vanilla events return `source` or `sender` instead of `player`, we have changed every property with `Player` into `player`.
+> Some Vanilla events return `source` or `sender` instead of `player`, I recommend you to checkout [Documentation](https://github.com/syylaxx/RockWrap/edit/main/README.md#--what-does-it-have).
 
 <h2 align="center">
   Why should I use it?
@@ -127,3 +127,6 @@ Just test it out and see!
 </h3>
 
 - [**ItemStackDataBase**](Documentation/DataBases/ItemStackDataBase.md)
+
+> [!IMPORTANT]
+> Some Events, like BlockBroken AfterEvent or BlockManager, are not 100% done, and may be useless or broken. It will be resolved soon.
