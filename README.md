@@ -98,32 +98,32 @@ Just test it out and see!
   AfterEvents
 </h3>
 
-- [**OnTick**](Documentation/AfterEvents/OnTick.dm)
-- [**MessageSent**](Documentation/AfterEvents/MessageSent.dm)
-- [**BlockBroken**](Documentation/AfterEvents/BlockBroken.dm)
-- [**BlockPlaced**](Documentation/AfterEvents/BlockPlaced.dm)
-- [**ItemUsed**](Documentation/AfterEvents/ItemUsed.dm)
-- [**PlayerSpawned**](Documentation/AfterEvents/PlayerSpawned.dm)
+- [**OnTick**](Documentation/AfterEvents/OnTick.md)
+- [**MessageSent**](Documentation/AfterEvents/MessageSent.md)
+- [**BlockBroken**](Documentation/AfterEvents/BlockBroken.md)
+- [**BlockPlaced**](Documentation/AfterEvents/BlockPlaced.md)
+- [**ItemUsed**](Documentation/AfterEvents/ItemUsed.md)
+- [**PlayerSpawned**](Documentation/AfterEvents/PlayerSpawned.md)
 
 <h3>
   BeforeEvents
 </h3>
 
-- [**MessageSent**](Documentation/BeforeEvents/MessageSent.dm)
-- [**BlockBroken**](Documentation/BeforeEvents/BlockBroken.dm)
-- [**BlockPlaced**](Documentation/BeforeEvents/BlockPlaced.dm)
-- [**ItemUsed**](Documentation/BeforeEvents/ItemUsed.dm)
+- [**MessageSent**](Documentation/BeforeEvents/MessageSent.md)
+- [**BlockBroken**](Documentation/BeforeEvents/BlockBroken.md)
+- [**BlockPlaced**](Documentation/BeforeEvents/BlockPlaced.md)
+- [**ItemUsed**](Documentation/BeforeEvents/ItemUsed.md)
 
 <h3>
   Managers
 </h3>
 
-- [**BlockManager**](Documentation/Managers/BlockManager.dm)
-- [**DynamicPropertyManager**](Documentation/Managers/DynamicPropertyManager.dm)
-- [**PlayerManager**](Documentation/Managers/PlayerManager.dm)
+- [**BlockManager**](Documentation/Managers/BlockManager.md)
+- [**DynamicPropertyManager**](Documentation/Managers/DynamicPropertyManager.md)
+- [**PlayerManager**](Documentation/Managers/PlayerManager.md)
 
 <h3>
   DataBases
 </h3>
 
-- [**ItemStackDataBase**](Documentation/DataBases/ItemStackDataBase.dm)
+- [**ItemStackDataBase**](Documentation/DataBases/ItemStackDataBase.md)
