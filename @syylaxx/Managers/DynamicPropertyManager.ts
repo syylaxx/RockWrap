@@ -1,6 +1,6 @@
 import { Vector3, world } from "@minecraft/server"
 
-export class DynamicProperty {
+export class DynamicPropertyManager {
     private identifier: string
 
     constructor(identifier: string) {

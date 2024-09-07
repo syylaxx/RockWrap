@@ -1,8 +1,8 @@
-import { Block } from "@minecraft/server"
+import { Block, Dimension } from "@minecraft/server"
 
 export class BlockManager {
-    private block
-    private dimension
+    private block: Block
+    private dimension: Dimension
 
     constructor(block: Block) {
         this.block = block
@@ -14,17 +14,4 @@ export class BlockManager {
         if (!this.block.dimension.getBlock(this.block.location))
             throw new Error(`Block ${x} ${y} ${z} could not be found!`)
     }
-
-    public destroy() {
-        const
-            { x, y , z } = block.location
-
-        if (!this.block.dimension.getBlock(this.block.location))
-            throw new Error(`Block ${x} ${y} ${z} could not be found!`)
-
-        this.dimension.runCommandAsync(`setblock ${x} ${y} ${z} air destroy`)
-    }
 }
-
-const
-    block = undefined as Block

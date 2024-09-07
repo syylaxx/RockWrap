@@ -1,6 +1,5 @@
 import { EntityInventoryComponent, EquipmentSlot, ItemStack, Player, Vector3, world } from "@minecraft/server"
-import { Privilages } from "../../Privilages/PrivilagesAPI"
-import { DynamicProperty } from "./DynamicProperty"
+import { DynamicPropertyManager } from "./DynamicPropertyManager"
 
 class PlayerInventoryManager {
     private inventory: EntityInventoryComponent
@@ -24,7 +23,7 @@ class PlayerInventoryManager {
             this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount}`)
     }
 
-    public getAllItems(): ItemStack[] {
+    public getAllItems(): ItemStack[] | [] {
         const
             items = [ ]
 
@@ -39,7 +38,11 @@ class PlayerInventoryManager {
         this.inventory.container.addItem(item)
     }
 
-    public getMainHand(): ItemStack {
+    public getItem(slot: number): ItemStack | undefined {
+        return this.player.getComponent("inventory").container.getItem(slot)
+    }
+
+    public getMainHand(): ItemStack | undefined {
         return this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand)
     }
 }
@@ -72,17 +75,10 @@ export class PlayerManager {
     }
 
     public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined) {
-        return new DynamicProperty(this.player.id + ":" + identifier).get(replaceValue as any)
+        return new DynamicPropertyManager(this.player.id + ":" + identifier).get(replaceValue as any)
     }
 
     public setData(identifier: string, value: string | number | boolean | Vector3) {
-        new DynamicProperty(this.player.id + ":" + identifier).set(value)
-    }
-
-    public hasPrivilage(minimumPrivilage: number) {
-        const
-            privilage = this.getData("Privilage") as number
-
-        return privilage >= minimumPrivilage
+        new DynamicPropertyManager(this.player.id + ":" + identifier).set(value)
     }
 }

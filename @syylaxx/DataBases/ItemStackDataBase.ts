@@ -1,5 +1,14 @@
-import { ItemStack } from "@minecraft/server"
-import { DynamicProperty } from "../Managers/DynamicProperty"
+import { Enchantment, ItemStack } from "@minecraft/server"
+import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager"
+
+interface ItemStackObject {
+    typeId: string,
+    nameTag: string,
+    amount: number,
+    damage: number,
+    lore: string[],
+    enchantments: Enchantment[]
+}
 
 export class ItemStackDataBase {
     private identifier: string
@@ -22,12 +31,12 @@ export class ItemStackDataBase {
                 enchantments: getEnchantments()
             }
 
-        new DynamicProperty(this.identifier).set(JSON.stringify(data))
+        new DynamicPropertyManager(this.identifier).set(JSON.stringify(data))
     }
 
     public getItemStack(): ItemStack {
         const
-            data = JSON.parse(new DynamicProperty(this.identifier).get() as string),
+            data = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as ItemStackObject,
             { typeId, nameTag, amount, damage, lore, enchantments } = data,
             itemStack = new ItemStack(typeId, amount)
 
@@ -40,6 +49,6 @@ export class ItemStackDataBase {
     }
 
     public reset() {
-        new DynamicProperty(this.identifier).reset()
+        new DynamicPropertyManager(this.identifier).reset()
     }
 }

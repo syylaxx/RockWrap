@@ -98,32 +98,32 @@ Just test it out and see!
   AfterEvents
 </h3>
 
-- [**OnTick**](@syylaxx/Documentation/AfterEvents/OnTick.dm)
-- [**MessageSent**](@syylaxx/Documentation/AfterEvents/MessageSent.dm)
-- [**BlockBroken**](@syylaxx/Documentation/AfterEvents/BlockBroken.dm)
-- [**BlockPlaced**](@syylaxx/Documentation/AfterEvents/BlockPlaced.dm)
-- [**ItemUsed**](@syylaxx/Documentation/AfterEvents/ItemUsed.dm)
-- [**PlayerSpawned**](@syylaxx/Documentation/AfterEvents/PlayerSpawned.dm)
+- [**OnTick**](Documentation/AfterEvents/OnTick.dm)
+- [**MessageSent**](Documentation/AfterEvents/MessageSent.dm)
+- [**BlockBroken**](Documentation/AfterEvents/BlockBroken.dm)
+- [**BlockPlaced**](Documentation/AfterEvents/BlockPlaced.dm)
+- [**ItemUsed**](Documentation/AfterEvents/ItemUsed.dm)
+- [**PlayerSpawned**](Documentation/AfterEvents/PlayerSpawned.dm)
 
 <h3>
   BeforeEvents
 </h3>
 
-- [**MessageSent**](@syylaxx/Documentation/BeforeEvents/MessageSent.dm)
-- [**BlockBroken**](@syylaxx/Documentation/BeforeEvents/BlockBroken.dm)
-- [**BlockPlaced**](@syylaxx/Documentation/BeforeEvents/BlockPlaced.dm)
-- [**ItemUsed**](@syylaxx/Documentation/BeforeEvents/ItemUsed.dm)
+- [**MessageSent**](Documentation/BeforeEvents/MessageSent.dm)
+- [**BlockBroken**](Documentation/BeforeEvents/BlockBroken.dm)
+- [**BlockPlaced**](Documentation/BeforeEvents/BlockPlaced.dm)
+- [**ItemUsed**](Documentation/BeforeEvents/ItemUsed.dm)
 
 <h3>
   Managers
 </h3>
 
-- [**BlockManager**](@syylaxx/Documentation/Managers/BlockManager.dm)
-- [**DynamicPropertyManager**](@syylaxx/Documentation/Managers/DynamicPropertyManager.dm)
-- [**PlayerManager**](@syylaxx/Documentation/Managers/PlayerManager.dm)
+- [**BlockManager**](Documentation/Managers/BlockManager.dm)
+- [**DynamicPropertyManager**](Documentation/Managers/DynamicPropertyManager.dm)
+- [**PlayerManager**](Documentation/Managers/PlayerManager.dm)
 
 <h3>
   DataBases
 </h3>
 
-- [**ItemStackDataBase**](@syylaxx/Documentation/DataBases/ItemStackDataBase.dm)
+- [**ItemStackDataBase**](Documentation/DataBases/ItemStackDataBase.dm)
