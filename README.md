@@ -1,132 +1,70 @@
-<h1 align="center">
-  RockWrap
-</h1>
+<p align="center">
+  <img src="public/assets/RockWrap.png" />
+</p>
 
 <p align="center">
-  <b>
-    A easy and optimized Wrapper for Minecraft Script API.
-  </b>
+    <b>Easy, flexible and high-level scripting wrapper!</b>
 </p>
 
-<h2 align="center">
-  What is it?
-</h2>
+<hr />
+
+<h3>
+    🔎 WHAT'S PURPOSE?
+</h3>
 
 <p>
-  This is a Wrapper that includes Events, Managers and other Tools, which help you create better Addons.
-</p>
-
-<p>
-  This is a Wrapper built in TypeScript for the Minecraft Script API.
+    RockWrap is a scripting wrapper written in TypeScript, to simplify some of your work, by using some of high-level methods or create your own server wrapper with this. 
 </p>
 
 <p>
-  It has different Managers which help you manage Minecraft Classes, makes your Code faster, easier and smaller.
+    Our wrapper includes custom event system, API to send webhooks to your Discord cannel, methods converted from default slash commands to API and much more!
 </p>
 
-<p>
-  Events have been also changed, subscribing to a Event happens only once, so lags are reduced even more!
-</p>
+<h3>
+    🪨 START USING OUR WRAPPER!
+</h3>
 
-<h2 align="center">
-    How do i use it?
-</h2>
-
-**1. You install the Repository and put it in your Addon.**
-
-```
-> AddonProject
-| > src
-| | > api
-| | | > @syylaxx
-| | Main.ts
-| manifest.json
-| pack_icon.png
+1. To start using our wrapper, download our repository, then insert it into your scripting folder.
+```powershell
+your-addon/
+├── scripts/
+│   ├── api/
+│   │   └── @rockwrap/
+│   └── core/
+│       └── > Scripts
+├── manifest.json
+└── > Other files.
 ```
 
 > [!TIP]
-> You can put the @syylaxx folder into a api/wrapper subfolder, for better File Structure.
+> You can put our wrapper into `api` or `wrapper` folder, for better import readability.
 
-**2. You import the needed Manager or Feature, and use it!**
-
+2. Start using our wrapper!
 ```ts
-import { system, world } from "@minecraft/server";
+import { world, system } from "@minecraft/server";
+import { BeforeEvents } from "api/@rockwrap/events/BeforeEvents";
 
-import { AfterEvents } from "api/@syylaxx/Events/AfterEvents";
-import { BeforeEvents } from "api/@syylaxx/Events/BeforeEvents";
-import { ItemStackDataBase } from "api/@syylaxx/DataBases/ItemStackDataBase";
-
-BeforeEvents.MessageSent(({ message, cancelEvent, player: { name } }) => {
+BeforeEvents.MessageSent(({ message, cancelEvent, player }): void => {
+    // Cancels out the event.
     cancelEvent();
 
-    world.sendMessage(` §b${name}§7 » ${message}`);
-});
-
-AfterEvents.OnTick(() => {
-    world.sendMessage(String(system.currentTick));
-});
-
-AfterEvents.ItemUsed(({ itemStack }) => {
-    new ItemStackDataBase("TestItem").saveItemStack(itemStack);
-
-    const
-        savedItemStack = new ItemStackDataBase("TestItem").getItemStack();
-
-    console.log(savedItemStack.typeId);
+    // Override default message.
+    world.sendMessage(`§f${player.name} §8» §7${message}`);
 });
 ```
-> [!IMPORTANT]
-> Some Vanilla events return `source` or `sender` instead of `player`, I recommend you to checkout [Documentation](https://github.com/syylaxx/RockWrap/edit/main/README.md#--what-does-it-have).
 
-<h2 align="center">
-  Why should I use it?
-</h2>
+> [!TIP]
+> We recommend checking out our [documentation](docs/README.md), to make development with our API even easier!
 
-I created this Wrapper because the Minecraft Script API doesn't have features I want.
-<br><br>
-So I added **Managers**, **DataBases**, **Before-** and **AfterEvents**, aswell a **onTick** event.
-<br><br>
-It makes your Code more **readable**, **smaller** **faster**.
-<br><br>
-Just test it out and see!
-
-<h2 align="center">
-  What does it have?
-</h2>
-  
-<h3>
-  AfterEvents
-</h3>
-
-- [**OnTick**](Documentation/AfterEvents/OnTick.md)
-- [**MessageSent**](Documentation/AfterEvents/MessageSent.md)
-- [**BlockBroken**](Documentation/AfterEvents/BlockBroken.md)
-- [**BlockPlaced**](Documentation/AfterEvents/BlockPlaced.md)
-- [**ItemUsed**](Documentation/AfterEvents/ItemUsed.md)
-- [**PlayerSpawned**](Documentation/AfterEvents/PlayerSpawned.md)
+<hr />
 
 <h3>
-  BeforeEvents
+    📌 CONTRIBUTORS
 </h3>
 
-- [**MessageSent**](Documentation/BeforeEvents/MessageSent.md)
-- [**BlockBroken**](Documentation/BeforeEvents/BlockBroken.md)
-- [**BlockPlaced**](Documentation/BeforeEvents/BlockPlaced.md)
-- [**ItemUsed**](Documentation/BeforeEvents/ItemUsed.md)
+<p>
+    Here you can find everyone, who helped with wrapper development process.
+</p>
 
-<h3>
-  Managers
-</h3>
-
-- [**BlockManager**](Documentation/Managers/BlockManager.md)
-- [**DynamicPropertyManager**](Documentation/Managers/DynamicPropertyManager.md)
-- [**PlayerManager**](Documentation/Managers/PlayerManager.md)
-
-<h3>
-  DataBases
-</h3>
-
-- [**ItemStackDataBase**](Documentation/DataBases/ItemStackDataBase.md)
-
-> [!IMPORTANT]
-> Some Events, like BlockBroken AfterEvent or BlockManager, are not 100% done, and may be useless or broken. It will be resolved soon.
+- Developer: <a href="https://github.com/syylaxx">syylaxx</a>
+- Documentation: <a href="https://github.com/m0lc14kk">m0lc14kk</a>
