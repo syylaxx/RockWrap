@@ -9,6 +9,12 @@
 <hr />
 
 <h4>
+    Configuration    
+</h4>
+
+- <a href="./config/index.md">RockWrap</a>
+
+<h4>
     Classes
 </h4>
 
