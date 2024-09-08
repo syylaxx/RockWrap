@@ -27,7 +27,7 @@
 1. To start using our wrapper, download our repository, then insert it into your scripting folder.
 ```powershell
 your-addon/
-├── scripts/
+├── src/
 │   ├── api/
 │   │   └── @rockwrap/
 │   └── core/
