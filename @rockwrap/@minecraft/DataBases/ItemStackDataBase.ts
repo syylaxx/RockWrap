@@ -13,7 +13,7 @@ interface ItemStackObject {
 export class ItemStackDataBase {
     private identifier: string
 
-    constructor(identifier: string) {
+    public constructor(identifier: string) {
         this.identifier = "ItemStackDataBase-" + identifier
     }
 
