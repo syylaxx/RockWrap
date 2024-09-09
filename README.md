@@ -59,6 +59,16 @@ BeforeEvents.MessageSent(({ message, cancelEvent, player }): void => {
 <hr />
 
 <h3>
+    📚 RESOURCES
+</h3>
+
+> [!IMPORTANT]
+> Documentation: [Documentation](docs/README.md)
+> Tutorials for beginners: [Tutorials](docs/tutorials/index.md)
+
+<hr />
+
+<h3>
     📌 CONTRIBUTORS
 </h3>
 
