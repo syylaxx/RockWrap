@@ -30,4 +30,4 @@
     NAVIGATION
 </h3>
 
-- Back to main README: <a href="../README.md">README</a> 
+- Back to main README: <a href="/README.md">README</a> 
