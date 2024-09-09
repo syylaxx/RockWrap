@@ -64,7 +64,9 @@ BeforeEvents.MessageSent(({ message, cancelEvent, player }): void => {
 
 > [!IMPORTANT]
 > Documentation: [Documentation](docs/README.md)
-> Tutorials for beginners: [Tutorials](docs/tutorials/index.md)
+
+> [!TIP]
+> > Tutorials for beginners: [Tutorials](docs/tutorials/index.md)
 
 <hr />
 
