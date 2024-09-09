@@ -3,29 +3,26 @@ import { Vector3, world } from "@minecraft/server"
 export class DynamicPropertyManager {
     private identifier: string
 
-    constructor(identifier: string) {
+    public constructor(identifier: string) {
         this.identifier = identifier
     }
 
-    get(replaceValue?: string) {
+    public get(replaceValue?: string): string | number | boolean | Vector3 | undefined {
         if (!world.getDynamicProperty(this.identifier))
             world.setDynamicProperty(this.identifier, replaceValue)
 
         return world.getDynamicProperty(this.identifier)
     }
 
-    set(value: string | number | boolean | Vector3) {
-        if (value === null)
-            world.setDynamicProperty(this.identifier, undefined)
-
+    public set(value: string | number | boolean | Vector3 = undefined): void {
         world.setDynamicProperty(this.identifier, value)
     }
 
-    reset() {
+    public reset(): void {
         world.setDynamicProperty(this.identifier, undefined)
     }
 
-    add(value: string | number) {
+    public add(value: string | number): void {
         const
             dynamicProperty = world.getDynamicProperty(this.identifier) as string
 
