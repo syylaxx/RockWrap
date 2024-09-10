@@ -2,28 +2,28 @@ import { Block, Container, Dimension, Vector3 } from "@minecraft/server";
 
 class BlockManager {
     public readonly location: Vector3;
-    public readonly block: Block;
+    public readonly instance: Block;
     public readonly dimension: Dimension;
 
     public constructor(block: Block) {
-        this.block = block;
+        this.instance = block;
 
         const { x, y ,z } = block.location;
 
-        if (!this.block.dimension.getBlock(this.block.location))
+        if (!this.instance.dimension.getBlock(this.instance.location))
             throw new Error(`Block ${x} ${y} ${z} could not be found!`);
 
         
-        this.dimension = this.block.dimension;
-        this.location = this.block.location;
+        this.dimension = this.instance.dimension;
+        this.location = this.instance.location;
     };
 
     public get container(): Container {
-        return this.block.getComponent("inventory").container;
+        return this.instance.getComponent("inventory").container;
     };
 
     /**
-     * Destroy the block using the setblock command.
+     * Destroy the instance using the setblock command.
      */
 
     public destroy(): void {
