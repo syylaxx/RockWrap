@@ -1,9 +1,10 @@
 import { Container, EntityInventoryComponent, EquipmentSlot, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server";
+
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 
 interface ItemStackData { typeId: string, amount?: number };
 interface InventorySlot { itemStack: ItemStack, slot: number };
-interface EffectOptions { duration: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
+interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
 
 class PlayerInventoryManager {
     private inventory: EntityInventoryComponent;
@@ -82,58 +83,57 @@ class PlayerInventoryManager {
 };
 
 class PlayerManager {
-    private player: Player;
-
+    public readonly instance: Player;
     public readonly identifier: string;
     public readonly name: string;
 
     public nameTag: string;
 
     public constructor(player: Player) {
-        this.player = player;
+        this.instance = player;
 
         if (!(player instanceof Player))
             throw new Error(`Player could not be found!`);
 
-        if (!world.getPlayers().find((x) => x.id === this.player.id))
-            throw new Error(`Player '${this.player.name}' could not be found!`);
+        if (!world.getPlayers().find((x) => x.id === this.instance.id))
+            throw new Error(`Player '${this.instance.name}' could not be found!`);
 
-        this.identifier = this.player.id;
-        this.nameTag = this.player.nameTag;
-        this.name = this.player.name;
+        this.identifier = this.instance.id;
+        this.nameTag = this.instance.nameTag;
+        this.name = this.instance.name;
     };
 
     public get inventory(): PlayerInventoryManager {
-        return new PlayerInventoryManager(this.player.getComponent("inventory") as EntityInventoryComponent);
+        return new PlayerInventoryManager(this.instance.getComponent("inventory") as EntityInventoryComponent);
     };
 
     public kick(reason: string): void {
-        this.player.runCommandAsync(`kick "${this.player.name}" ${reason}`);
+        this.instance.runCommandAsync(`kick "${this.instance.name}" ${reason}`);
     };
 
     public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 {
-        return new DynamicPropertyManager(this.player.id + ":" + identifier).get(replaceValue as any);
+        return new DynamicPropertyManager(this.instance.id + ":" + identifier).get(replaceValue as any);
     };
 
     public setData(identifier: string, value: string | number | boolean | Vector3): void {
-        new DynamicPropertyManager(this.player.id + ":" + identifier).set(value);
+        new DynamicPropertyManager(this.instance.id + ":" + identifier).set(value);
     };
 
     public sendMessage(text: string | string[] | number | RawText): void {
         if (typeof text === "number") {
-            this.player.sendMessage(String(text));
+            this.instance.sendMessage(String(text));
         } else {
-            this.player.sendMessage(text);
+            this.instance.sendMessage(text);
         };
     };
 
-    public addEffect(type: string, { duration, amplifier = 0, showParticles = true, infinity = false }: EffectOptions): void {
+    public addEffect(type: string, { duration = 20 * 20, amplifier = 0, showParticles = true, infinity = false }: EffectOptions): void {
         if (infinity) {
             system.runInterval(() => {
-                this.player.addEffect(type, 21, { amplifier: amplifier, showParticles: showParticles });
+                this.instance.addEffect(type, 21, { amplifier: amplifier, showParticles: showParticles });
             }, 20);
         } else {
-            this.player.addEffect(type, duration, { amplifier: amplifier, showParticles: showParticles });
+            this.instance.addEffect(type, duration, { amplifier: amplifier, showParticles: showParticles });
         };
     };
 };
