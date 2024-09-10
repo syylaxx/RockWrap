@@ -1,4 +1,6 @@
 import { Block, ItemStack, Player, world } from "@minecraft/server"
+import { PlayerManager } from "../Managers/PlayerManager"
+import { BlockManager } from "../Managers/BlockManager"
 
 interface MessageSentArgs { message: string, player: Player, cancelEvent: () => void }
 interface BlockBrokenArgs { block: Block, player: Player, itemStack: ItemStack, cancelEvent: () => void }
@@ -57,6 +59,9 @@ export class BeforeEvents {
 
             eventCallBack.player = eventCallBack.sender ?? eventCallBack.player
             eventCallBack.player = eventCallBack.source ?? eventCallBack.player
+
+            eventCallBack.player = new PlayerManager(eventCallBack.player)
+            eventCallBack.block = new BlockManager(eventCallBack.block)
         
             for (const callback of eventData.callbacks)
                 callback(eventCallBack)
