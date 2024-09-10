@@ -1,4 +1,4 @@
-import { RockWrap } from "../../RockWrap";
+import { RockWrap } from "../../config";
 import { IEmbedField } from "./interfaces/embed/IEmbedField";
 import { IEmbedWrapper } from "./interfaces/IEmbedWrapper";
 import type { EmbedContentTypes } from "./types/EmbedContentTypes";

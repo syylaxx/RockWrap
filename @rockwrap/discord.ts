@@ -1,0 +1,1 @@
+export { WebhookWrapper } from "./@discord/webhooks/WebhookWrapper";

@@ -2,7 +2,7 @@ import { http, HttpHeader, HttpRequest, HttpRequestMethod } from "@minecraft/ser
 import { IWebhookContent } from "./interfaces/IWebhookContent";
 import { IEmbedWrapper } from "../embeds/interfaces/IEmbedWrapper";
 import { EmbedWrapper } from "../embeds/EmbedWrapper";
-import { RockWrap } from "../../RockWrap";
+import { RockWrap } from "../../config";
 
 class WebhookWrapper {
     private constructor() {};
