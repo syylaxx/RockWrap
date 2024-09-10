@@ -1,4 +1,4 @@
-import { EntityInventoryComponent, EquipmentSlot, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server"
+import { Container, EntityInventoryComponent, EquipmentSlot, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server"
 import { DynamicPropertyManager } from "./DynamicPropertyManager"
 
 interface ItemStackData { typeId: string, amount?: number }
@@ -14,7 +14,7 @@ class PlayerInventoryManager {
         this.player = this.inventory.entity as Player
     }
 
-    public get container() {
+    public get container(): Container {
         return this.inventory.container
     }
 
@@ -88,6 +88,11 @@ class PlayerInventoryManager {
 export class PlayerManager {
     private player: Player
 
+    public readonly identifier: string
+    public readonly name: string
+
+    public nameTag: string
+
     public constructor(player: Player) {
         this.player = player
 
@@ -96,6 +101,10 @@ export class PlayerManager {
 
         if (!world.getPlayers().find((x) => x.id === this.player.id))
             throw new Error(`Player '${this.player.name}' could not be found!`)
+
+        this.identifier = this.player.id
+        this.nameTag = this.player.nameTag
+        this.name = this.player.name
     }
 
     public get inventory(): PlayerInventoryManager {
