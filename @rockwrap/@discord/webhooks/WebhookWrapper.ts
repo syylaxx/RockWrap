@@ -2,11 +2,20 @@ import { http, HttpHeader, HttpRequest, HttpRequestMethod } from "@minecraft/ser
 import { IWebhookContent } from "./interfaces/IWebhookContent";
 import { IEmbedWrapper } from "../embeds/interfaces/IEmbedWrapper";
 import { EmbedWrapper } from "../embeds/EmbedWrapper";
+import { RockWrap } from "../../RockWrap";
 
 class WebhookWrapper {
     private constructor() {};
 
+    /**
+     * Send webhooks on Discord channels.
+     * @param uri URL of a webhook.
+     * @param param1 Content of message.
+     * @throws Function can throw error if you have not added `@minecraft/server-net` to your modules in config, or request was not send correct.
+     */
     public static sendWebhook(uri: string, { content = "", embeds = [] }: IWebhookContent): void {
+        if (!RockWrap.config["@server"].modules.includes("@minecraft/server-net")) throw new Error("ModuleError: You cannot use WebhookWrapper, if you have not added @minecraft/server-net to you modules.");
+
         try {
             http.request(
                 new HttpRequest(uri)

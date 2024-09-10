@@ -8,6 +8,24 @@
  */
 
 const rockWrapConfiguration = Object.freeze({
+    "@server": {
+        /**
+         * Activated modules on your world or server.
+         * This might be required to use some of our modules.
+         * @default 
+         * ```json
+         *  [
+         *      "@minecraft/server", 
+         *      "@minecraft/server-ui"
+         *  ]
+         * ```
+         */
+        modules: [
+            "@minecraft/server",
+            "@minecraft/server-ui"
+        ]
+    },
+
     "@discord": {
         embeds: {
             color: 0x000000
