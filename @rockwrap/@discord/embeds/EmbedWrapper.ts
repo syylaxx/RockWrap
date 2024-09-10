@@ -5,7 +5,7 @@ import type { EmbedContentTypes } from "./types/EmbedContentTypes";
 class EmbedWrapper {
     private embedTitle: EmbedContentTypes = null;
     private embedDescription: EmbedContentTypes = null;
-    private embedColor: number = RockWrap["@discord"].embeds.color;
+    private embedColor: number = RockWrap.config["@discord"].embeds.color;
 
     public setTitle(title: EmbedContentTypes): EmbedWrapper {
         this.embedTitle = title;
