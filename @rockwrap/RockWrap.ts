@@ -1,12 +1,16 @@
-import { rockWrapConfiguration } from "./@config/RockWrapConfig";
+import { rockWrapConfiguration } from "./@config/RockWrapConfig"
+import { registerPlayers } from "./@minecraft/tasks/sync/PlayerRegister"
 
-class RockWrap {
-    private constructor() {};   
-    public static readonly config = rockWrapConfiguration;
+export class RockWrap {
+    public static readonly config = rockWrapConfiguration
+
+    private constructor() {}
+
+    /**
+     * This method is needed for some features, we recommend to execute it!
+     */
 
     public static startUp(): void {
-        
-    };
-};
-
-export { RockWrap };
+        registerPlayers()
+    }
+}
