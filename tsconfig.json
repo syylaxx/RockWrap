@@ -1,0 +1,29 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ES2022",
+
+        "strict": false,
+        "removeComments": true,
+        "checkJs": false,
+        "allowJs": false,
+
+        "allowSyntheticDefaultImports": false,
+        "moduleResolution": "Node",
+
+        "rootDir": "./@rockwrap",
+        "outDir": "./@rockwrap-dist"
+    },
+
+    "include": [
+        "@rockwrap"
+    ],
+
+    "exclude": [
+        "@rockwrap-dist",
+        "node_modules",
+        "public",
+        "docs",
+    ]
+}

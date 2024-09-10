@@ -3,7 +3,7 @@ import { AfterEvents } from "../Events/AfterEvents"
 import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager"
 
 export function
-    playerRegister() {
+    registerPlayers() {
         AfterEvents.PlayerSpawned(({ player, playerJoined }) => {
             if (!playerJoined)
                 return

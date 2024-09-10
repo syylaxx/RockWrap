@@ -1,18 +1,12 @@
-/**
- *  ------------------------------------
- *  ROCKWRAP: CONFIG
- *  ------------------------------------
- * 
- *  In this file you can mess around with our config.
- *  You can find more information about config at: https://github.com/syylaxx/RockWrap/blob/main/docs/config/index.md
- */
+import { rockWrapConfiguration } from "./@config/RockWrapConfig";
 
-const RockWrap = Object.freeze({
-    "@discord": {
-        embeds: {
-            color: 0x000000
-        }
-    }
-});
+class RockWrap {
+    private constructor() {};   
+    public static readonly config = rockWrapConfiguration;
+
+    public static startUp(): void {
+        
+    };
+};
 
 export { RockWrap };
