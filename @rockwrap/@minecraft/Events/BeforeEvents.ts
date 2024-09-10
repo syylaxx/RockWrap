@@ -2,6 +2,7 @@ import { Block, ItemStack, Player, world } from "@minecraft/server";
 
 import { PlayerManager } from "../Managers/PlayerManager";
 import { BlockManager } from "../Managers/BlockManager";
+import { ItemStackManager } from "../Managers/ItemStackManager";
 
 interface MessageSentArgs { message: string, player: Player, cancelEvent: () => void };
 interface BlockBrokenArgs { block: Block, player: Player, itemStack: ItemStack, cancelEvent: () => void };
@@ -59,6 +60,17 @@ class BeforeEvents {
 
             eventCallBack.player = new PlayerManager(eventCallBack.player);
             eventCallBack.block = new BlockManager(eventCallBack.block);
+
+            let { player, itemStack, block } = eventCallBack;
+
+            if (player)
+                player = new PlayerManager(player);
+
+            if (itemStack)
+                itemStack = new ItemStackManager(itemStack);
+
+            if (block)
+                block = new BlockManager(block);
         
             for (const callback of eventData.callbacks)
                 callback(eventCallBack);

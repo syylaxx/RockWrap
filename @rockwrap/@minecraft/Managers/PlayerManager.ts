@@ -1,6 +1,7 @@
 import { Container, EntityInventoryComponent, EquipmentSlot, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
+import { ItemStackManager } from "./ItemStackManager";
 
 interface ItemStackData { typeId: string, amount?: number };
 interface InventorySlot { itemStack: ItemStack, slot: number };
@@ -37,12 +38,12 @@ class PlayerInventoryManager {
      * @returns Return an Array with ItemStack.
      */
 
-    public getAllItems(): ItemStack[] | [] {
+    public getAllItems(): ItemStackManager[] {
         const items = [ ];
 
         for (let i = 0; i < this.inventory.inventorySize; i++)
             if (this.inventory.container.getItem(i))
-                items.push(this.inventory.container?.getItem(i));
+                items.push(new ItemStackManager(this.inventory.container?.getItem(i)) ?? null);
 
         return items;
     };
@@ -52,7 +53,7 @@ class PlayerInventoryManager {
      * @returns Return an Array with InventorySlot.
      */
 
-    public getInventory(): InventorySlot[] | [] {
+    public getInventory(): InventorySlot[] {
         const inventory = [ ];
 
         for (let i = 0; i < this.inventory.inventorySize; i++)
@@ -69,16 +70,16 @@ class PlayerInventoryManager {
         this.inventory.container.addItem(item);
     };
 
-    public getItem(slot: number): ItemStack | undefined {
-        return this.player.getComponent("inventory").container.getItem(slot);
+    public getItem(slot: number): ItemStackManager | undefined {
+        return new ItemStackManager(this.player.getComponent("inventory").container.getItem(slot)) ?? undefined;
     };
 
-    public getMainHand(): ItemStack | undefined {
-        return this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand);
+    public getMainHand(): ItemStackManager | undefined {
+        return new ItemStackManager(this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand)) ?? undefined;
     };
 
-    public getOffHand(): ItemStack | undefined {
-        return this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand);
+    public getOffHand(): ItemStackManager | undefined {
+        return new ItemStackManager(this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand)) ?? undefined;
     };
 };
 
@@ -90,17 +91,17 @@ class PlayerManager {
     public nameTag: string;
 
     public constructor(player: Player) {
-        this.instance = player;
-
         if (!(player instanceof Player))
-            throw new Error(`Player could not be found!`);
+            throw new Error(`Player was not defined correctly!`);
 
-        if (!world.getPlayers().find((x) => x.id === this.instance.id))
+        if (!world.getPlayers().find((x) => x.id === player.id))
             throw new Error(`Player '${this.instance.name}' could not be found!`);
 
-        this.identifier = this.instance.id;
-        this.nameTag = this.instance.nameTag;
-        this.name = this.instance.name;
+        this.instance = player;
+        this.identifier = player.id;
+        this.name = player.name;
+
+        this.nameTag = player.nameTag;
     };
 
     public get inventory(): PlayerInventoryManager {

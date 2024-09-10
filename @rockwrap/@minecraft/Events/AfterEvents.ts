@@ -1,12 +1,13 @@
-import { Block, ItemStack, world, system, Player } from "@minecraft/server";
+import { Block, ItemStack, world, system } from "@minecraft/server";
 
 import { PlayerManager } from "../Managers/PlayerManager";
 import { BlockManager } from "../Managers/BlockManager";
+import { ItemStackManager } from "../Managers/ItemStackManager";
 
 interface MessageSentArgs { message: string, player: PlayerManager };
-interface BlockBrokenArgs { block: Block, player: PlayerManager, itemStack: ItemStack };
+interface BlockBrokenArgs { block: Block, player: PlayerManager, itemStack: ItemStackManager };
 interface BlockPlacedArgs { block: Block, player: PlayerManager };
-interface ItemUsedArgs { itemStack: ItemStack, player: PlayerManager };
+interface ItemUsedArgs { itemStack: ItemStackManager, player: PlayerManager };
 interface PlayerSpawnedArgs { playerJoined: boolean, player: PlayerManager };
 
 const eventsData = [
@@ -69,13 +70,28 @@ class AfterEvents {
         eventData.isSubscribed = true;
 
         world.afterEvents[eventData.event].subscribe((eventCallBack: any) => {
-            eventCallBack.playerJoined = eventCallBack.initialSpawn;
-            
-            eventCallBack.player = eventCallBack.sender ?? eventCallBack.player;
-            eventCallBack.player = eventCallBack.source ?? eventCallBack.player;
+            let {
+                player,
+                itemStack,
+                block,
+                playerJoined,
+                initialSpawn,
+                sender,
+                source
+            } = eventCallBack;
 
-            eventCallBack.player = new PlayerManager(eventCallBack.player);
-            eventCallBack.block = new BlockManager(eventCallBack.block);
+            playerJoined = initialSpawn;
+            
+            player = sender ?? player;
+            player = source ?? player;
+
+            console.warn((itemStack ? new ItemStackManager(itemStack) : undefined).durability)
+
+            player = player ? new PlayerManager(player) : undefined;
+
+            itemStack = itemStack ? new ItemStackManager(itemStack) : undefined;
+
+            block = block ? new BlockManager(block) : undefined;
 
             for (const callback of eventData.callbacks)
                 callback(eventCallBack);

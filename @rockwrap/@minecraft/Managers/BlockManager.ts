@@ -4,18 +4,21 @@ class BlockManager {
     public readonly location: Vector3;
     public readonly instance: Block;
     public readonly dimension: Dimension;
+    public readonly typeId: string;
 
     public constructor(block: Block) {
-        this.instance = block;
-
         const { x, y ,z } = block.location;
 
-        if (!this.instance.dimension.getBlock(this.instance.location))
+        if (!(block instanceof Block))
+            throw new Error(`Block was not defined correctly!`);
+
+        if (!block.dimension.getBlock(block.location))
             throw new Error(`Block ${x} ${y} ${z} could not be found!`);
 
-        
-        this.dimension = this.instance.dimension;
-        this.location = this.instance.location;
+        this.instance = block;
+        this.dimension = block.dimension;
+        this.location = block.location;
+        this.typeId = block.typeId;
     };
 
     public get container(): Container {
