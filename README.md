@@ -42,7 +42,7 @@ your-addon/
 2. Start using our wrapper!
 ```ts
 import { world, system } from "@minecraft/server";
-import { BeforeEvents } from "api/@rockwrap/events/BeforeEvents";
+import { BeforeEvents } from "api/@rockwrap/minecraft";
 
 BeforeEvents.MessageSent(({ message, cancelEvent, player }): void => {
     // Cancels out the event.
