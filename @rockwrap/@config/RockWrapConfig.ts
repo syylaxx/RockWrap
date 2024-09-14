@@ -30,6 +30,20 @@ const rockWrapConfiguration = Object.freeze({
         embeds: {
             color: 0x000000
         }
+    },
+
+    "@minecraft": {
+        messages: {
+            prefix: ""
+        }
+    },
+
+    "@console": {
+        debug: "[RockWrap] ",
+        error: "[RockWrap] ",
+        warn: "[RockWrap] ",
+        info: "[RockWrap] ",
+        log: "[RockWrap] "
     }
 });
 

@@ -1,11 +1,11 @@
-import { Container, EntityInventoryComponent, EquipmentSlot, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server";
+import { Container, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { ItemStackManager } from "./ItemStackManager";
 
-interface ItemStackData { typeId: string, amount?: number };
-interface InventorySlot { itemStack: ItemStack, slot: number };
 interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
+interface InventorySlot { itemStack: ItemStack, slot: number };
+interface ItemStackData { typeId: string, amount?: number };
 
 class PlayerInventoryManager {
     private inventory: EntityInventoryComponent;
@@ -84,8 +84,8 @@ class PlayerInventoryManager {
 };
 
 class PlayerManager {
-    public readonly instance: Player;
     public readonly identifier: string;
+    public readonly instance: Player;
     public readonly name: string;
 
     public nameTag: string;
@@ -106,6 +106,10 @@ class PlayerManager {
 
     public get inventory(): PlayerInventoryManager {
         return new PlayerInventoryManager(this.instance.getComponent("inventory") as EntityInventoryComponent);
+    };
+
+    public getGameMode(): GameMode {
+        return this.instance.getGameMode();
     };
 
     public kick(reason: string): void {

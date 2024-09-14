@@ -1,4 +1,4 @@
-import { Block, Container, Dimension, Vector3 } from "@minecraft/server";
+import { Block, BlockPermutation, Container, Dimension, Vector3 } from "@minecraft/server";
 
 class BlockManager {
     public readonly location: Vector3;
@@ -23,6 +23,10 @@ class BlockManager {
 
     public get container(): Container {
         return this.instance.getComponent("inventory").container;
+    };
+
+    public get permutation(): BlockPermutation {
+        return this.instance.permutation;
     };
 
     /**
