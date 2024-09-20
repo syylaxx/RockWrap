@@ -25,7 +25,7 @@ class PlayerInventoryManager {
     };
 
     public clearItem(item: ItemStackData): void {
-        this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount}`);
+        this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount = 1}`);
     };
 
     public clearItems(items: ItemStackData[]): void {
@@ -88,8 +88,6 @@ class PlayerManager {
     public readonly instance: Player;
     public readonly name: string;
 
-    public nameTag: string;
-
     public constructor(player: Player) {
         if (!(player instanceof Player))
             throw new Error(`Player was not defined correctly!`);
@@ -100,8 +98,14 @@ class PlayerManager {
         this.instance = player;
         this.identifier = player.id;
         this.name = player.name;
+    };
+    
+    public get nameTag(): string {
+        return this.instance.nameTag;
+    };
 
-        this.nameTag = player.nameTag;
+    public set nameTag(value: string) {
+        this.instance.nameTag = value;
     };
 
     public get inventory(): PlayerInventoryManager {
@@ -110,6 +114,10 @@ class PlayerManager {
 
     public getGameMode(): GameMode {
         return this.instance.getGameMode();
+    };
+
+    public isOp(): boolean {
+        return this.instance.isOp();
     };
 
     public kick(reason: string): void {

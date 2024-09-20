@@ -9,8 +9,6 @@ class EntityManager {
     public readonly identifier: string;
     public readonly instance: Entity;
 
-    public nameTag: string;
-
     public constructor(entity: Entity) {
         if (!(entity instanceof Entity))
             throw new Error(`[ERROR] Entity was not defined correctly!`);
@@ -20,8 +18,14 @@ class EntityManager {
 
         this.instance = entity;
         this.identifier = entity.id;
+    };
 
-        this.nameTag = entity.nameTag;
+    public get nameTag(): string {
+        return this.instance.nameTag;
+    };
+
+    public set nameTag(value: string) {
+        this.instance.nameTag = value;
     };
 
     /**
@@ -29,10 +33,10 @@ class EntityManager {
      */
 
     public get playerInstance(): PlayerManager | undefined {
-        const player = world.getPlayers().find((x) => x.id === this.identifier)
+        const player = world.getPlayers().find((x) => x.id === this.identifier);
 
-        return player ? new PlayerManager(player) : undefined
-    }
+        return player ? new PlayerManager(player) : undefined;
+    };
 
     public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 {
         return new DynamicPropertyManager(this.instance.id + ":" + identifier).get(replaceValue as any);

@@ -15,7 +15,6 @@ interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: 
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly identifier: string, readonly name: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
-interface WorldInitializedArgs { };
 
 const eventsData = [
     {
@@ -67,6 +66,12 @@ const eventsData = [
         callbacks: [] as Array<(args: MessageSentArgs) => void>
     },
     {
+        identifier: "OnTick",
+        event: undefined,
+        isSubscribed: false,
+        callbacks: [] as Array<() => void>
+    },
+    {
         identifier: "PlayerLeft",
         event: "playerLeave",
         isSubscribed: false,
@@ -82,24 +87,23 @@ const eventsData = [
         identifier: "WorldInitialized",
         event: "worldInitialize",
         isSubscribed: false,
-        callbacks: [] as Array<(args: WorldInitializedArgs) => void>
+        callbacks: [] as Array<() => void>
     },
 ];
 
 class AfterEvents {
-    private static intervals: (() => void)[] = [];
-    private static isSubscribed: boolean = false;
-
     public static OnTick(callback: () => void): void {
-        this.intervals.push(callback);
+        const eventData = eventsData.find(event => event.identifier === "OnTick");
 
-        if (this.isSubscribed) return;
+        eventData.callbacks.push(callback);
 
-        this.isSubscribed = true;
+        if (eventData.isSubscribed) return;
+
+        eventData.isSubscribed = true;
 
         system.runInterval(() => {
-            for (const interval of this.intervals)
-                interval();
+            for (const interval of eventData.callbacks)
+                interval(null);
         }, 1);
     };
 
@@ -207,7 +211,7 @@ class AfterEvents {
         this.subscribe("PlayerSpawned", callback);
     };
 
-    public static WorldInitialized(callback: (args: WorldInitializedArgs) => void): void {
+    public static WorldInitialized(callback: () => void): void {
         this.subscribe("WorldInitialized", callback);
     };
 }

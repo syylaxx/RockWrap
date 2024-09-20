@@ -12,7 +12,6 @@ interface ItemPickedUpArgs { readonly itemStack: ItemStackManager, readonly play
 interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface PlayerLeftArgs { readonly player: PlayerManager };
-interface WorldInitializedArgs { };
 
 const eventsData = [
     {
@@ -61,7 +60,7 @@ const eventsData = [
         identifier: "WorldInitialized",
         event: "worldInitialize",
         isSubscribed: false,
-        callbacks: [] as Array<(args: WorldInitializedArgs) => void>
+        callbacks: [] as Array<() => void>
     },
 ];
 
@@ -96,7 +95,7 @@ class BeforeEvents {
 
             const player = new PlayerManager(nearestPlayer);
 
-            const itemStack = new ItemStackManager(item.getComponent("item").itemStack)
+            const itemStack = new ItemStackManager(item.getComponent("item").itemStack);
 
             const cancelEvent = () => {
                 player.inventory.clearItem({ typeId: itemStack.typeId, amount: itemStack.amount });
@@ -107,7 +106,7 @@ class BeforeEvents {
                 eventDataCallback({ itemStack, player, cancelEvent } as any);
         });
     };
-
+    
     private static subscribe(identifier: string, callback: (arg: any) => void) {
         const eventData = eventsData.find(event => event.identifier === identifier);
 
@@ -174,7 +173,7 @@ class BeforeEvents {
         this.subscribe("PlayerLeft", callback);
     };
 
-    public static WorldInitialized(callback: (args: WorldInitializedArgs) => void) {
+    public static WorldInitialized(callback: () => void) {
         this.subscribe("WorldInitialized", callback);
     };
 }
