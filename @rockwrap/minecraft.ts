@@ -5,6 +5,7 @@ export { BlockVolumeManager } from "./@minecraft/Managers/BlockVolumeManager";
 export { ConsoleManager } from "./@minecraft/Managers/ConsoleManager";
 export { DynamicPropertyManager } from "./@minecraft/Managers/DynamicPropertyManager";
 export { EntityManager } from "./@minecraft/Managers/EntityManager";
+export { EntityDataManager } from "./@minecraft/Managers/EntityDataManager";
 export { ItemStackDataBase } from "./@minecraft/DataBases/ItemStackDataBase";
 export { ItemStackManager } from "./@minecraft/Managers/ItemStackManager";
 export { PlayerDataManager } from "./@minecraft/Managers/PlayerDataManager";

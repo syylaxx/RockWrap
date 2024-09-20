@@ -1,4 +1,4 @@
-import { world, system, Player, Entity, Block, BlockPermutation, EntityDamageSource } from "@minecraft/server";
+import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause } from "@minecraft/server";
 
 import { PlayerManager } from "../Managers/PlayerManager";
 import { BlockManager } from "../Managers/BlockManager";
@@ -10,7 +10,9 @@ interface BlockPlacedArgs { readonly block: BlockManager, readonly player: Playe
 interface ButtonPushedArgs { readonly block: BlockManager, readonly entity: EntityManager};
 interface EntityHitEntityArgs { readonly hitEntity: EntityManager, readonly hurtEntity: EntityManager };
 interface EntityHurtArgs { readonly entity: EntityManager, readonly damageSource: EntityDamageSource, readonly damage: number };
+interface EntitySpawnedArgs { readonly cause: EntityInitializationCause, readonly entity: EntityManager }
 interface InteractedWithBlockArgs { readonly block: BlockManager, readonly player: PlayerManager };
+interface InteractedWithEntityArgs { readonly entity: EntityManager, readonly player: PlayerManager };
 interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly identifier: string, readonly name: string };
@@ -48,10 +50,22 @@ const eventsData = [
         callbacks: [] as Array<(args: EntityHurtArgs) => void>
     },
     {
+        identifier: "EntitySpawned",
+        event: "entitySpawn",
+        isSubscribed: false,
+        callbacks: [] as Array<(args: EntitySpawnedArgs) => void>
+    },
+    {
         identifier: "InteractedWithBlock",
         event: "playerInteractWithBlock",
         isSubscribed: false,
         callbacks: [] as Array<(args: InteractedWithBlockArgs) => void>
+    },
+    {
+        identifier: "InteractedWithEntity",
+        event: "playerInteractWithEntity",
+        isSubscribed: false,
+        callbacks: [] as Array<(args: InteractedWithEntityArgs) => void>
     },
     {
         identifier: "ItemUsed",
@@ -93,7 +107,7 @@ const eventsData = [
 
 class AfterEvents {
     public static OnTick(callback: () => void): void {
-        const eventData = eventsData.find(event => event.identifier === "OnTick");
+        const eventData = eventsData.find(event => event.identifier === "OnTick")
 
         eventData.callbacks.push(callback);
 
@@ -102,8 +116,8 @@ class AfterEvents {
         eventData.isSubscribed = true;
 
         system.runInterval(() => {
-            for (const interval of eventData.callbacks)
-                interval(null);
+            for (const interval of eventData.callbacks as Array<() => void>)
+                interval();
         }, 1);
     };
 
@@ -129,39 +143,26 @@ class AfterEvents {
                 hitEntity,
                 damagingEntity,
                 target,
-                brokenBlockPermutation,
-                playerId,
-                playerName,
-                damageSource,
             } = callback;
+            
+            const cancelEvent = () => callback.cancel = true;
 
-            const getPlayer = () => source instanceof Player ? source : sender ?? player;
-            const getEntity = () => source instanceof Entity ? source : target ?? hurtEntity ?? entity;
-
-            const wrapInManager = () => ({
-                block: block ? new BlockManager(block) : undefined,
-                damagingEntity: damagingEntity ? new EntityManager(damagingEntity) : undefined,
-                entity: getEntity() ? new EntityManager(getEntity()) : undefined,
-                itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
-                player: getPlayer() ? new PlayerManager(getPlayer()) : undefined,
-                hitEntity: hitEntity ? new EntityManager(hitEntity) : undefined,
-            });
-
-            const cancelEvent = () => {
-                callback.cancel = true;
-            };
+            const getPlayer = source instanceof Player ? source : sender ?? player;
+            const getEntity = source instanceof Entity ? source : target ?? hurtEntity ?? entity;
 
             const properties = {
-                brokenBlockPermutation: brokenBlockPermutation,
-                identifier: playerId,
-                name: playerName,
-                playerJoined: initialSpawn,
-                damageSource: damageSource,
-            }
+                block: block ? new BlockManager(block) : undefined,
+                damagingEntity: damagingEntity ? new EntityManager(damagingEntity) : undefined,
+                entity: getEntity ? new EntityManager(getEntity()) : undefined,
+                itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
+                player: getPlayer ? new PlayerManager(getPlayer()) : undefined,
+                hitEntity: hitEntity ? new EntityManager(hitEntity) : undefined,
+
+                playerSpawned: initialSpawn
+            };
 
             const replacedCallback = {
                 ...callback,
-                ...wrapInManager(),
                 ...properties,
                 cancelEvent
             };
@@ -191,8 +192,16 @@ class AfterEvents {
         this.subscribe("EntityHurt", callback);
     };
 
+    public static EntitySpawned(callback: (args: EntitySpawnedArgs) => void): void {
+        this.subscribe("EntitySpawned", callback);
+    };
+
     public static InteractedWithBlock(callback: (args: InteractedWithBlockArgs) => void): void {
         this.subscribe("InteractedWithBlock", callback);
+    };
+
+    public static InteractedWithEntity(callback: (args: InteractedWithEntityArgs) => void): void {
+        this.subscribe("InteractedWithEntity", callback);
     };
 
     public static ItemUsed(callback: (args: ItemUsedArgs) => void): void {

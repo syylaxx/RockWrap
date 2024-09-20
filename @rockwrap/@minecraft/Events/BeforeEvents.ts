@@ -8,6 +8,7 @@ import { EntityManager } from "../Managers/EntityManager";
 interface BlockBrokenArgs { readonly block: BlockManager, readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface BlockPlacedArgs { readonly block: BlockManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface InteractedWithBlockArgs { readonly block: BlockManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
+interface InteractedWithEntityArgs { readonly entity: EntityManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface ItemPickedUpArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager, readonly cancelEvent: () => void };
@@ -31,6 +32,12 @@ const eventsData = [
         event: "playerInteractWithBlock",
         isSubscribed: false,
         callbacks: [] as Array<(args: InteractedWithBlockArgs) => void>
+    },
+    {
+        identifier: "InteractedWithEntity",
+        event: "playerInteractWithEntity",
+        isSubscribed: false,
+        callbacks: [] as Array<(args: InteractedWithEntityArgs) => void>
     },
     {
         identifier: "ItemPickedUp",
@@ -127,24 +134,22 @@ class BeforeEvents {
                 hurtEntity,
                 target,
             } = callback;
+            
+            const cancelEvent = () => callback.cancel = true;
 
-            const getPlayer = () => source instanceof Player ? source : sender ?? player;
-            const getEntity = () => source instanceof Entity ? source : target ?? hurtEntity ?? entity;
+            const getPlayer = source instanceof Player ? source : sender ?? player;
+            const getEntity = source instanceof Entity ? source : target ?? hurtEntity ?? entity;
 
-            const wrapInManager = () => ({
+            const properties = {
                 block: block ? new BlockManager(block) : undefined,
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
-                player: player ? new PlayerManager(getPlayer()) : undefined,
-                entity: entity ? new EntityManager(getEntity()) : undefined,
-            });
-
-            const cancelEvent = () => {
-                callback.cancel = true;
-            };
+                player: getPlayer ? new PlayerManager(getPlayer) : undefined,
+                entity: getEntity ? new EntityManager(getEntity) : undefined,
+            }
 
             const replacedCallback = {
                 ...callback,
-                ...wrapInManager(),
+                ...properties,
                 cancelEvent,
             };
         
@@ -159,6 +164,14 @@ class BeforeEvents {
     
     public static BlockPlaced(callback: (args: BlockPlacedArgs) => void) {
         this.subscribe("BlockPlaced", callback);
+    };
+
+    public static InteractedWithBlock(callback: (args: InteractedWithBlockArgs) => void): void {
+        this.subscribe("InteractedWithBlock", callback);
+    };
+
+    public static InteractedWithEntity(callback: (args: InteractedWithEntityArgs) => void): void {
+        this.subscribe("InteractedWithEntity", callback);
     };
     
     public static ItemUsed(callback: (args: ItemUsedArgs) => void) {
