@@ -1,4 +1,4 @@
-import { AfterEvents } from "../../Events/AfterEvents";
+import { AfterEvents } from "../../events/AfterEvents";
 import { DynamicPropertyManager } from "../../Managers/DynamicPropertyManager";
 
 /**

@@ -4,6 +4,7 @@ import { BlockManager } from "../Managers/BlockManager";
 import { ItemStackManager } from "../Managers/ItemStackManager";
 import { PlayerManager } from "../Managers/PlayerManager";
 import { EntityManager } from "../Managers/EntityManager";
+import type { CallbackType } from "./types/CallbackType";
 
 interface BlockBrokenArgs { readonly block: BlockManager, readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface BlockPlacedArgs { readonly block: BlockManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
@@ -14,7 +15,7 @@ interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: 
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager, readonly cancelEvent: () => void };
 interface PlayerLeftArgs { readonly player: PlayerManager };
 
-const eventsData = [
+const eventsData: CallbackType<any>[] = [
     {
         identifier: "BlockBroken",
         event: "playerBreakBlock",
@@ -92,19 +93,18 @@ class BeforeEvents {
                 return dx <= range && dy <= range && dz <= range;
             };
 
-            const range = 1.5;
+            const range: number = 1.5;
 
-            const nearestPlayer = world.getPlayers().find((currentPlayer) => {
+            const nearestPlayer: Player | undefined = world.getPlayers().find((currentPlayer) => {
                 return isPlayerInRange(currentPlayer.location, location, range);
             });
 
             if (typeId !== "minecraft:item" || !nearestPlayer) return;
 
-            const player = new PlayerManager(nearestPlayer);
+            const player: PlayerManager = new PlayerManager(nearestPlayer);
+            const itemStack: ItemStackManager = new ItemStackManager(item.getComponent("item").itemStack);
 
-            const itemStack = new ItemStackManager(item.getComponent("item").itemStack);
-
-            const cancelEvent = () => {
+            const cancelEvent = (): void => {
                 player.inventory.clearItem({ typeId: itemStack.typeId, amount: itemStack.amount });
                 system.runTimeout(() => dimension.spawnItem(itemStack.instance, location).clearVelocity(), 10);
             };
@@ -114,7 +114,7 @@ class BeforeEvents {
         });
     };
     
-    private static subscribe(identifier: string, callback: (arg: any) => void) {
+    private static subscribe(identifier: string, callback: (arg: any) => void): void {
         const eventData = eventsData.find(event => event.identifier === identifier);
 
         eventData.callbacks.push(callback);
@@ -158,11 +158,11 @@ class BeforeEvents {
         });              
     };
     
-    public static BlockBroken(callback: (args: BlockBrokenArgs) => void) {
+    public static BlockBroken(callback: (args: BlockBrokenArgs) => void): void {
         this.subscribe("BlockBroken", callback);
     };
     
-    public static BlockPlaced(callback: (args: BlockPlacedArgs) => void) {
+    public static BlockPlaced(callback: (args: BlockPlacedArgs) => void): void {
         this.subscribe("BlockPlaced", callback);
     };
 
@@ -174,19 +174,19 @@ class BeforeEvents {
         this.subscribe("InteractedWithEntity", callback);
     };
     
-    public static ItemUsed(callback: (args: ItemUsedArgs) => void) {
+    public static ItemUsed(callback: (args: ItemUsedArgs) => void): void {
         this.subscribe("ItemUsed", callback);
     };
 
-    public static MessageSent(callback: (args: MessageSentArgs) => void) {
+    public static MessageSent(callback: (args: MessageSentArgs) => void): void {
         this.subscribe("MessageSent", callback);
     };
 
-    public static PlayerLeft(callback: (args: PlayerLeftArgs) => void) {
+    public static PlayerLeft(callback: (args: PlayerLeftArgs) => void): void {
         this.subscribe("PlayerLeft", callback);
     };
 
-    public static WorldInitialized(callback: () => void) {
+    public static WorldInitialized(callback: () => void): void {
         this.subscribe("WorldInitialized", callback);
     };
 }
