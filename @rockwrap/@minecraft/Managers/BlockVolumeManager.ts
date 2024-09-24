@@ -4,7 +4,7 @@ import { BlockVolume, Vector3 } from "@minecraft/server";
  * Special class to work with block volumes.
  */
 class BlockVolumeManager {
-    private blockVolume: BlockVolume;
+    private readonly blockVolume: BlockVolume;
 
     /**
      * Declare a BlockVolume for our manager.

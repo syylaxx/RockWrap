@@ -13,7 +13,7 @@ const isADynamicPropertyValue = (value: any): boolean => {
 };
 
 class DynamicPropertyManager {
-    private identifier: string;
+    private readonly identifier: string;
 
     /**
      * Creates a class for managing this identifier.

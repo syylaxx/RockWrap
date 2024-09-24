@@ -11,7 +11,7 @@ class ConsoleManager {
      * Sends a information in console.
      * @param message Content of a information.
      */
-    public static info(message: any) {
+    public static info(message: any): void {
         console.info(RockWrap.config["@console"].info + message);
     };
 
@@ -19,7 +19,7 @@ class ConsoleManager {
      * Sends a warning to console.
      * @param message Content of a warning.
      */
-    public static warn(message: any) {
+    public static warn(message: any): void {
         console.warn(RockWrap.config["@console"].warn + message);
     };
 
@@ -27,7 +27,7 @@ class ConsoleManager {
      * Sends a debug message to console.
      * @param message Content of a debug message.
      */
-    public static debug(message: any) {
+    public static debug(message: any): void {
         console.debug(RockWrap.config["@console"].debug + message);
     };
 
@@ -35,7 +35,7 @@ class ConsoleManager {
      * Sends an error message to console.
      * @param message Content of an error.
      */
-    public static error(message: any) {
+    public static error(message: any): void {
         console.error(RockWrap.config["@console"].error + message);
     };
 
@@ -43,7 +43,7 @@ class ConsoleManager {
      * Sends a basic messages, marked as log in console.
      * @param message Content of a message.
      */
-    public static log(message: any) {
+    public static log(message: any): void {
         console.log(RockWrap.config["@console"].log + message);
     };
 };
