@@ -34,16 +34,16 @@ const rockWrapConfiguration = Object.freeze({
 
     "@minecraft": {
         messages: {
-            prefix: ""
+            prefix: "§8 » §7"
         }
     },
 
     "@console": {
-        debug: "[RockWrap] ",
-        error: "[RockWrap] ",
-        warn: "[RockWrap] ",
-        info: "[RockWrap] ",
-        log: "[RockWrap] "
+        debug: "[DEBUG] ",
+        error: "[ERROR] ",
+        warn: "[WARN] ",
+        info: "[INFO] ",
+        log: "[LOG] "
     }
 });
 

@@ -1,11 +1,15 @@
-import { Container, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, RawText, system, Vector3, world } from "@minecraft/server";
+import { Container, Dimension, EntityComponentTypes, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { ItemStackManager } from "./ItemStackManager";
+import { ConsoleManager } from "./ConsoleManager";
+import { rockWrapConfiguration } from "../../@config/RockWrapConfig";
 
 interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
-interface InventorySlot { itemStack: ItemStack, slot: number };
+interface InventorySlot { itemStack: ItemStackManager, slot: number };
 interface ItemStackData { typeId: string, amount?: number };
+
+const messagePrefix = rockWrapConfiguration["@minecraft"].messages.prefix;
 
 class PlayerInventoryManager {
     private inventory: EntityInventoryComponent;
@@ -56,47 +60,68 @@ class PlayerInventoryManager {
     public getInventory(): InventorySlot[] {
         const inventory = [ ];
 
-        for (let i = 0; i < this.inventory.inventorySize; i++)
-            if (this.inventory.container.getItem(i))
+        for (let i = 0; i < this.inventory.inventorySize; i++) {
+            const itemStack = this.inventory.container.getItem(i);
+
+            const itemStackManager = itemStack ? new ItemStackManager(itemStack) : undefined;
+
+            if (itemStackManager)
                 inventory.push({
-                    itemStack: this.inventory.container.getItem(i),
+                    itemStack: itemStackManager,
                     slot: i
                 });
+        };
 
         return inventory;
     };
 
-    public giveItem(item: ItemStack): void {
-        this.inventory.container.addItem(item);
+    public giveItem(itemStack: ItemStack): void {
+        this.inventory.container.addItem(itemStack);
+    };
+
+    public setItem(itemStack: ItemStack, slot: number): void {
+        this.inventory.container.setItem(slot, itemStack);
     };
 
     public getItem(slot: number): ItemStackManager | undefined {
-        return new ItemStackManager(this.player.getComponent("inventory").container.getItem(slot)) ?? undefined;
+        const itemStack = this.player.getComponent("inventory").container.getItem(slot);
+
+        return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
 
     public getMainHand(): ItemStackManager | undefined {
-        return new ItemStackManager(this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand)) ?? undefined;
+        const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand);
+
+        return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
 
     public getOffHand(): ItemStackManager | undefined {
-        return new ItemStackManager(this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand)) ?? undefined;
+        const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand);
+
+        return itemStack ? new ItemStackManager(itemStack) : undefined;
+    };
+
+    public setMainHand(itemStack: ItemStack): void {
+        this.container.setItem(this.player.selectedSlotIndex, itemStack);
     };
 };
 
 class PlayerManager {
+    public readonly dimension: Dimension;
     public readonly identifier: string;
     public readonly instance: Player;
     public readonly name: string;
 
     public constructor(player: Player) {
         if (!(player instanceof Player))
-            throw new Error(`Player was not defined correctly!`);
+            throw ConsoleManager.error(`Player was not defined correctly!`);
 
         if (!world.getPlayers().find((x) => x.id === player.id))
-            throw new Error(`Player '${this.instance.name}' could not be found!`);
+            throw ConsoleManager.error(`Player '${this.instance.name}' could not be found!`);
 
-        this.instance = player;
+        this.dimension = player.dimension;
         this.identifier = player.id;
+        this.instance = player;
         this.name = player.name;
     };
     
@@ -134,9 +159,9 @@ class PlayerManager {
 
     public sendMessage(text: string | string[] | number | RawText): void {
         if (typeof text === "number") {
-            this.instance.sendMessage(String(text));
+            this.instance.sendMessage(messagePrefix + String(text));
         } else {
-            this.instance.sendMessage(text);
+            this.instance.sendMessage(messagePrefix + text);
         };
     };
 
@@ -149,6 +174,18 @@ class PlayerManager {
             this.instance.addEffect(type, duration, { amplifier: amplifier, showParticles: showParticles });
         };
     };
+
+    public playSound(type: string, options: PlayerSoundOptions = undefined): void {
+        this.instance.playSound(type, options);
+    };
+
+    public getComponent(component: EntityComponentTypes) {
+        return this.instance.getComponent(component);
+    };
+
+    public applyKnockback(directionX: number, directionZ: number, horizontalStrength: number, verticalStrength: number): void {
+        this.instance.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+    };
 };
 
-export { PlayerManager };
+export { PlayerManager, ItemStackData };

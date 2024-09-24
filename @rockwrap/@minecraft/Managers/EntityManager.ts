@@ -2,22 +2,27 @@ import { Entity, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { PlayerManager } from "./PlayerManager";
+import { ConsoleManager } from "./ConsoleManager";
 
 interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
 
 class EntityManager {
     public readonly identifier: string;
     public readonly instance: Entity;
+    public readonly location: Vector3;
+    public readonly typeId: string;
 
     public constructor(entity: Entity) {
         if (!(entity instanceof Entity))
-            throw new Error(`[ERROR] Entity was not defined correctly!`);
+            throw ConsoleManager.error(`Entity was not defined correctly!`);
 
         if (!entity.dimension.getEntities().find((x) => x.id === entity.id))
-            throw new Error(`[ERROR] Entity '${this.instance.typeId}' could not be found!`);
+            throw ConsoleManager.error(`Entity '${this.instance.typeId}' could not be found!`);
 
         this.instance = entity;
         this.identifier = entity.id;
+        this.location = entity.location;
+        this.typeId = entity.typeId;
     };
 
     public get nameTag(): string {
