@@ -54,9 +54,8 @@ class PlayerInventoryManager {
 
     /**
      * Gets the whole inventory of the Player, and returns Array with InventorySlot.
-     * @returns Return an Array with InventorySlot.
+     * @returns Return an array with InventorySlot.
      */
-
     public getInventory(): InventorySlot[] {
         const inventory = [ ];
 

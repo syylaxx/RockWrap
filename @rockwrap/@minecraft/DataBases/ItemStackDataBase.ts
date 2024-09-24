@@ -3,7 +3,7 @@ import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager";
 import { ItemStackObject } from "./interfaces/ItemStackObject";
 
 class ItemStackDataBase {
-    private identifier: string;
+    private readonly identifier: string;
 
     /**
      * Creates an item database.
@@ -22,10 +22,7 @@ class ItemStackDataBase {
         const { getEnchantments } = getComponent("enchantable");
         const { damage } = getComponent("durability");
         const data = {
-            typeId: typeId,
-            nameTag: nameTag,
-            amount: amount,
-            damage: damage,
+            typeId, nameTag, amount, damage,
             lore: getLore(),
             enchantments: getEnchantments()
         };
@@ -53,7 +50,7 @@ class ItemStackDataBase {
     /**
      * Resets item from database.
      */
-    public reset() {
+    public reset(): void {
         new DynamicPropertyManager(this.identifier).reset();
     };
 }
