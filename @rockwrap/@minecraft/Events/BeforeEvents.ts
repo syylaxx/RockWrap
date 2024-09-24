@@ -1,19 +1,18 @@
 import { Entity, Player, system, world } from "@minecraft/server";
-
 import { BlockManager } from "../Managers/BlockManager";
 import { ItemStackManager } from "../Managers/ItemStackManager";
 import { PlayerManager } from "../Managers/PlayerManager";
 import { EntityManager } from "../Managers/EntityManager";
 import type { CallbackType } from "./types/CallbackType";
 
-interface BlockBrokenArgs { readonly block: BlockManager, readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface BlockPlacedArgs { readonly block: BlockManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface InteractedWithBlockArgs { readonly block: BlockManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface InteractedWithEntityArgs { readonly entity: EntityManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface ItemPickedUpArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface MessageSentArgs { readonly message: string, readonly player: PlayerManager, readonly cancelEvent: () => void };
-interface PlayerLeftArgs { readonly player: PlayerManager };
+import { BlockBrokenArgs } from "./interfaces/BeforeEvents/BlockBrokenArgs";
+import { BlockPlacedArgs } from "./interfaces/BeforeEvents/BlockPlacedArgs";
+import { InteractedWithBlockArgs } from "./interfaces/BeforeEvents/InteractedWithBlockArgs";
+import { InteractedWithEntityArgs } from "./interfaces/BeforeEvents/InteractedWithEntityArgs";
+import { ItemPickedUpArgs } from "./interfaces/BeforeEvents/ItemPickedUpArgs";
+import { ItemUsedArgs } from "./interfaces/BeforeEvents/ItemUsedArgs";
+import { MessageSentArgs } from "./interfaces/BeforeEvents/MessageSentArgs";
+import { PlayerLeftArgs } from "./interfaces/BeforeEvents/PlayerLeftArgs";
 
 const eventsData: CallbackType<any>[] = [
     {
@@ -135,7 +134,7 @@ class BeforeEvents {
                 target,
             } = callback;
             
-            const cancelEvent = () => callback.cancel = true;
+            const cancelEvent = (): boolean => callback.cancel = true;
 
             const getPlayer = source instanceof Player ? source : sender ?? player;
             const getEntity = source instanceof Entity ? source : target ?? hurtEntity ?? entity;
