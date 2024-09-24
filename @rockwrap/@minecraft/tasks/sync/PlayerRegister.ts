@@ -1,6 +1,9 @@
 import { AfterEvents } from "../../Events/AfterEvents";
 import { DynamicPropertyManager } from "../../Managers/DynamicPropertyManager";
 
+/**
+ * Registers player's database for `@rockwrap` modules.
+ */
 const registerPlayers = (): void => {
     AfterEvents.PlayerSpawned(({ player, playerJoined }) => {
         if (!playerJoined) return;
