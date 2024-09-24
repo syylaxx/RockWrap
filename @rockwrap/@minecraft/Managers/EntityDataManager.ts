@@ -19,12 +19,12 @@ class EntityDataManager {
     }
 
     /**
-     * Gets an data for selected identifier, which is assigned to this entity..
+     * Gets an data for selected identifier, which is assigned to this entity.
      * @param identifier Identifier, that will be the source.
      * @param replaceValue Default value for search.
      * @returns Value or the default one from this identifier. 
      */
-    public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): DynamicPropertyValue {
+    public getData(identifier: string, replaceValue: DynamicPropertyValue = undefined): DynamicPropertyValue {
         return new DynamicPropertyManager(this.identifier + ":" + identifier).get(replaceValue as any);
     };
 
@@ -33,7 +33,7 @@ class EntityDataManager {
      * @param identifier Identifier, that will save value.
      * @param value Value of an identifier.
      */
-    public setData(identifier: string, value: string | number | boolean | Vector3): void {
+    public setData(identifier: string, value: DynamicPropertyValue): void {
         new DynamicPropertyManager(this.identifier + ":" + identifier).set(value);
     };
 };
