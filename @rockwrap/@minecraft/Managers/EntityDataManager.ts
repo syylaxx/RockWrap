@@ -1,15 +1,15 @@
-import { Vector3, world } from "@minecraft/server";
+import { Entity, Vector3, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 
 class EntityDataManager {
-    private identifier: string;
+    private readonly identifier: string;
 
     /**
      * Creates a instance of class to manage entity's properties.
      * @param identifier Identifier of an entity. (`import("@minecraft/server").Entity.id`)
      */
     public constructor(identifier: string) {
-        const entity = world.getEntity(identifier)
+        const entity: Entity | undefined = world.getEntity(identifier)
 
         if (!entity)
             throw Error(`Entity is not loaded.`);
