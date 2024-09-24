@@ -26,14 +26,14 @@ class DynamicPropertyManager {
      * @param replaceValue Default value of this property.
      * @returns Value of this identifier.
      */
-    public get(replaceValue: any = undefined): any {
+    public get(replaceValue: any = undefined): string {
         if (!isADynamicPropertyValue(replaceValue))
             replaceValue = JSON.stringify(replaceValue);
 
         if (!world.getDynamicProperty(this.identifier))
             world.setDynamicProperty(this.identifier, replaceValue);
 
-        let dynamicProperty = world.getDynamicProperty(this.identifier) as string;
+        let dynamicProperty: string = world.getDynamicProperty(this.identifier) as string;
 
         //console.warn(dynamicProperty)
 

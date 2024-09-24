@@ -84,7 +84,7 @@ class BeforeEvents {
         eventData.isSubscribed = true;
 
         world.beforeEvents.entityRemove.subscribe(({ removedEntity: item, removedEntity: { typeId, dimension, location } }) => {
-            const isPlayerInRange = (loc1: { x: number, y: number, z: number }, loc2: { x: number, y: number, z: number }, range: number) => {
+            const isPlayerInRange = (loc1: { x: number, y: number, z: number }, loc2: { x: number, y: number, z: number }, range: number): boolean => {
                 const dx = Math.abs(loc1.x - loc2.x);
                 const dy = Math.abs(loc1.y - loc2.y);
                 const dz = Math.abs(loc1.z - loc2.z);

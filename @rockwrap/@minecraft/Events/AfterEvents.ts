@@ -4,6 +4,7 @@ import { PlayerManager } from "../Managers/PlayerManager";
 import { BlockManager } from "../Managers/BlockManager";
 import { ItemStackManager } from "../Managers/ItemStackManager";
 import { EntityManager } from "../Managers/EntityManager";
+import { CallbackType } from "./types/CallbackType";
 
 interface BlockBrokenArgs { readonly block: BlockManager, readonly brokenBlockPermutation: BlockPermutation, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface BlockPlacedArgs { readonly block: BlockManager, readonly player: PlayerManager };
@@ -19,7 +20,7 @@ interface MessageSentArgs { readonly message: string, readonly player: PlayerMan
 interface PlayerLeftArgs { readonly identifier: string, readonly name: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
 
-const eventsData = [
+const eventsData: CallbackType<any>[] = [
     {
         identifier: "BlockBroken",
         event: "playerBreakBlock",
@@ -122,7 +123,7 @@ class AfterEvents {
 
         eventData.isSubscribed = true;
 
-        system.runInterval(() => {
+        system.runInterval((): void => {
             for (const interval of eventData.callbacks as Array<() => void>)
                 interval();
         }, 1);
@@ -156,8 +157,8 @@ class AfterEvents {
             
             const cancelEvent = () => callback.cancel = true;
 
-            const getPlayer = source instanceof Player ? source : sender ?? player;
-            const getEntity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
+            const getPlayer: Player = source instanceof Player ? source : sender ?? player;
+            const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
 
             const properties = {
                 block: block ? new BlockManager(block) : undefined,
