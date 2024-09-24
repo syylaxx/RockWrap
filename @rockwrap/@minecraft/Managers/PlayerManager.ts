@@ -9,7 +9,7 @@ interface EffectOptions { duration?: number, amplifier?: number, showParticles?:
 interface InventorySlot { itemStack: ItemStackManager, slot: number };
 interface ItemStackData { typeId: string, amount?: number };
 
-const messagePrefix = rockWrapConfiguration["@minecraft"].messages.prefix;
+const { prefix: messagePrefix } = rockWrapConfiguration["@minecraft"].messages;
 
 class PlayerInventoryManager {
     private inventory: EntityInventoryComponent;
