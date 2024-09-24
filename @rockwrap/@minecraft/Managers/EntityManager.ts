@@ -1,10 +1,8 @@
 import { Entity, system, Vector3, world } from "@minecraft/server";
-
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { PlayerManager } from "./PlayerManager";
 import { ConsoleManager } from "./ConsoleManager";
-
-interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
+import { EffectOptions } from "./interfaces/EffectOptions";
 
 class EntityManager {
     public readonly identifier: string;

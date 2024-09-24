@@ -1,5 +1,6 @@
 import { Entity, Vector3, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
+import type { DynamicPropertyValue } from "./types/DynamicPropertyValue";
 
 class EntityDataManager {
     private readonly identifier: string;
@@ -23,7 +24,7 @@ class EntityDataManager {
      * @param replaceValue Default value for search.
      * @returns Value or the default one from this identifier. 
      */
-    public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 | undefined {
+    public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): DynamicPropertyValue {
         return new DynamicPropertyManager(this.identifier + ":" + identifier).get(replaceValue as any);
     };
 
