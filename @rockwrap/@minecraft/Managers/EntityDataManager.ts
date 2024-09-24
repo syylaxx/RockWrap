@@ -23,7 +23,7 @@ class EntityDataManager {
      * @param replaceValue Default value for search.
      * @returns Value or the default one from this identifier. 
      */
-    public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 {
+    public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 | undefined {
         return new DynamicPropertyManager(this.identifier + ":" + identifier).get(replaceValue as any);
     };
 

@@ -1,7 +1,5 @@
 import { Vector3, world } from "@minecraft/server";
 
-type DynamicPropertyValue = string | number | boolean | Vector3 | undefined;
-
 const isADynamicPropertyValue = (value: any): boolean => {
     return (
         typeof value === "string" ||
