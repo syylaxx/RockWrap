@@ -3,7 +3,14 @@ import { PlayerManager } from "../../../Managers/PlayerManager";
 import { BeforeEventArgs } from "./BeforeEventArgs";
 
 interface ItemPickedUpArgs extends BeforeEventArgs {
-    readonly itemStack: ItemStackManager, 
+    /**
+     * Item, that was picked up.
+     */
+    readonly itemStack: ItemStackManager,
+    
+    /**
+     * Player, that picked up the item.
+     */
     readonly player: PlayerManager, 
 };
 
