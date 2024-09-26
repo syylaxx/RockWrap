@@ -15,19 +15,33 @@ class PlayerInventoryManager {
     private inventory: EntityInventoryComponent;
     private player: Player;
 
+    /**
+     * Creates an instance of custom player's inventory manager.
+     * @param inventory Inventory of a player.
+     */
     public constructor(inventory: EntityInventoryComponent) {
         this.inventory = inventory;
         this.player = this.inventory.entity as Player;
     }
 
+    /**
+     * Default instance of a container.
+     */
     public get container(): Container {
         return this.inventory.container;
     };
 
+    /**
+     * Clears all items from inventory.
+     */
     public clearAll(): void {
         this.inventory.container.clearAll();
     };
 
+    /**
+     * Clears selected item and it's amount.
+     * @param item Information about deletion.
+     */
     public clearItem(item: ItemStackData): void {
         this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount = 1}`);
     };
@@ -38,12 +52,11 @@ class PlayerInventoryManager {
     }
 
     /**
-     * Gets all Items from the Player, and returns Array with ItemStack.
-     * @returns Return an Array with ItemStack.
+     * Gets all items from the player's inventory, and returns an array with items.
+     * @returns An array with items.
      */
-
     public getAllItems(): ItemStackManager[] {
-        const items = [ ];
+        const items: ItemStackManager[] = [];
 
         for (let i = 0; i < this.inventory.inventorySize; i++)
             if (this.inventory.container.getItem(i))
@@ -53,8 +66,8 @@ class PlayerInventoryManager {
     };
 
     /**
-     * Gets the whole inventory of the Player, and returns Array with InventorySlot.
-     * @returns Return an array with InventorySlot.
+     * Gets the whole inventory of the player, and returns an array with item and their slot in inventory.
+     * @returns An array with item and their position in player's inventory.
      */
     public getInventory(): InventorySlot[] {
         const inventory = [ ];
@@ -74,32 +87,58 @@ class PlayerInventoryManager {
         return inventory;
     };
 
+    /**
+     * Gives an item to inventory.
+     * @param itemStack Default instance of item, that will be added.
+     */
     public giveItem(itemStack: ItemStack): void {
         this.inventory.container.addItem(itemStack);
     };
 
+    /**
+     * Sets an item on specific slot.
+     * @param itemStack Default instance of item, that will be set on selected slot.
+     * @param slot Slot, that will get the item.
+     */
     public setItem(itemStack: ItemStack, slot: number): void {
         this.inventory.container.setItem(slot, itemStack);
     };
 
+    /**
+     * Gets an item from selected slot.
+     * @param slot Slot, that will be the source.
+     * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
+     */
     public getItem(slot: number): ItemStackManager | undefined {
         const itemStack = this.player.getComponent("inventory").container.getItem(slot);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
 
+    /**
+     * Gets an item from player's selected item.
+     * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
+     */
     public getMainHand(): ItemStackManager | undefined {
         const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
 
+    /**
+     * Gets an item from player's left hand.
+     * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
+     */
     public getOffHand(): ItemStackManager | undefined {
         const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
 
+    /**
+     * Sets an item from player's selected item.
+     * @param itemStack Item, that will be replaced in player's selected slot.
+     */
     public setMainHand(itemStack: ItemStack): void {
         this.container.setItem(this.player.selectedSlotIndex, itemStack);
     };
