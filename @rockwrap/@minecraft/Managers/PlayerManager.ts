@@ -29,7 +29,7 @@ class PlayerInventoryManager {
      */
     public get container(): Container {
         return this.inventory.container;
-    };
+    }; 
 
     /**
      * Clears all items from inventory.
@@ -49,7 +49,7 @@ class PlayerInventoryManager {
     public clearItems(items: ItemStackData[]): void {
         for (const item of items)
             this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount}`);
-    }
+    };
 
     /**
      * Gets all items from the player's inventory, and returns an array with items.
