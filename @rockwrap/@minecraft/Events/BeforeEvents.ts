@@ -7,6 +7,7 @@ import type { CallbackType } from "./types/CallbackType";
 
 import { BlockBrokenArgs } from "./interfaces/BeforeEvents/BlockBrokenArgs";
 import { BlockPlacedArgs } from "./interfaces/BeforeEvents/BlockPlacedArgs";
+import { EntityRemovedArgs } from "./interfaces/BeforeEvents/EntityRemovedArgs";
 import { InteractedWithBlockArgs } from "./interfaces/BeforeEvents/InteractedWithBlockArgs";
 import { InteractedWithEntityArgs } from "./interfaces/BeforeEvents/InteractedWithEntityArgs";
 import { ItemPickedUpArgs } from "./interfaces/BeforeEvents/ItemPickedUpArgs";
@@ -26,6 +27,12 @@ const eventsData: CallbackType<any>[] = [
         event: "playerPlaceBlock",
         isSubscribed: false,
         callbacks: [] as Array<(args: BlockPlacedArgs) => void>
+    },
+    {
+        identifier: "EntityRemoved",
+        event: "entityRemove",
+        isSubscribed: false,
+        callbacks: [] as Array<(args: EntityRemovedArgs) => void>
     },
     {
         identifier: "InteractedWithBlock",
@@ -132,18 +139,22 @@ class BeforeEvents {
                 entity,
                 hurtEntity,
                 target,
+                message,
+                removedEntity,
             } = callback;
             
             const cancelEvent = (): boolean => callback.cancel = true;
 
             const getPlayer = source instanceof Player ? source : sender ?? player;
-            const getEntity = source instanceof Entity ? source : target ?? hurtEntity ?? entity;
+            const getEntity = source instanceof Entity ? source : target ?? hurtEntity ?? removedEntity ?? entity;
 
             const properties = {
                 block: block ? new BlockManager(block) : undefined,
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
                 entity: getEntity ? new EntityManager(getEntity) : undefined,
+
+                message,
             };
 
             const replacedCallback = {
@@ -163,6 +174,10 @@ class BeforeEvents {
     
     public static BlockPlaced(callback: (args: BlockPlacedArgs) => void): void {
         this.subscribe("BlockPlaced", callback);
+    };
+        
+    public static EntityRemoved(callback: (args: EntityRemovedArgs) => void): void {
+        this.subscribe("EntityRemoved", callback);
     };
 
     public static InteractedWithBlock(callback: (args: InteractedWithBlockArgs) => void): void {

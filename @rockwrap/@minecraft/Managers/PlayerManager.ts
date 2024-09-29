@@ -1,4 +1,4 @@
-import { Container, Dimension, EntityComponentTypes, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
+import { CommandResult, Container, Dimension, EntityComponentTypes, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { ItemStackManager } from "./ItemStackManager";
@@ -183,8 +183,16 @@ class PlayerManager {
         return this.instance.isOp();
     };
 
-    public kick(reason: string): void {
-        this.instance.runCommandAsync(`kick "${this.instance.name}" ${reason}`);
+    public runCommand(command: string): CommandResult | Promise<CommandResult> {
+        try {
+            return this.instance.runCommand(command);
+        } catch {
+            return this.instance.runCommandAsync(command);
+        };
+    };
+
+    public kick(reason: string = ""): void {
+        this.runCommand(`kick "${this.instance.name}" ${reason}`);
     };
 
     public getData(identifier: string, replaceValue: string | number | boolean | Vector3 = undefined): string | number | boolean | Vector3 {

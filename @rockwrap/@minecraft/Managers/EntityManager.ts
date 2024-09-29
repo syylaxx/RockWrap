@@ -38,8 +38,8 @@ class EntityManager {
         if (!(entity instanceof Entity))
             throw ConsoleManager.error(`Entity was not defined correctly!`);
 
-        if (!entity.dimension.getEntities().find((x) => x.id === entity.id))
-            throw ConsoleManager.error(`Entity '${this.instance.typeId}' could not be found!`);
+        if (!world.getEntity(entity.id))
+            throw ConsoleManager.error(`Entity '${entity.typeId}' could not be found!`);
 
         this.instance = entity;
         this.identifier = entity.id;

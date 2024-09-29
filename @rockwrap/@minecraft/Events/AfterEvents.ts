@@ -11,13 +11,14 @@ interface BlockPlacedArgs { readonly block: BlockManager, readonly player: Playe
 interface ButtonPushedArgs { readonly block: BlockManager, readonly entity: EntityManager};
 interface EntityHitEntityArgs { readonly entity: EntityManager, readonly hitEntity: EntityManager };
 interface EntityHurtArgs { readonly entity: EntityManager, readonly damageSource: EntityDamageSource, readonly damage: number };
+interface EntityRemovedArgs { readonly entityIdentifier: string, readonly typeId: string };
 interface EntitySpawnedArgs { readonly cause: EntityInitializationCause, readonly entity: EntityManager }
 interface InteractedWithBlockArgs { readonly block: BlockManager, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface InteractedWithEntityArgs { readonly entity: EntityManager, readonly player: PlayerManager };
 interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface ItemUsedOnArgs { readonly block: BlockManager, readonly blockFace: Direction, readonly faceLocation: Vector3, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
-interface PlayerLeftArgs { readonly identifier: string, readonly name: string };
+interface PlayerLeftArgs { readonly playerIdentifier: string, readonly playerName: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
 
 const eventsData: CallbackType<any>[] = [
@@ -50,6 +51,12 @@ const eventsData: CallbackType<any>[] = [
         event: "entityHurt",
         isSubscribed: false,
         callbacks: [] as Array<(args: EntityHurtArgs) => void>
+    },
+    {
+        identifier: "EntityRemoved",
+        event: "entityRemove",
+        isSubscribed: false,
+        callbacks: [] as Array<(args: EntityRemovedArgs) => void>
     },
     {
         identifier: "EntitySpawned",
@@ -153,23 +160,24 @@ class AfterEvents {
                 target,
                 playerName,
                 playerId,
+                removedEntityId,
             } = callback;
             
             const cancelEvent = () => callback.cancel = true;
 
-            const getPlayer: Player = source instanceof Player ? source : sender ?? player;
             const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
+            const getPlayer: Player = source instanceof Player ? source : sender ?? player;
 
             const properties = {
                 block: block ? new BlockManager(block) : undefined,
                 entity: getEntity ? new EntityManager(getEntity) : undefined,
+                hitEntity: hitEntity ? new EntityManager(hitEntity) : undefined,
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
-                hitEntity: hitEntity ? new EntityManager(hitEntity) : undefined,
 
-                playerSpawned: initialSpawn,
-                name: playerName,
-                identifier: playerId,
+                entityIdentifier: removedEntityId,
+                playerIdentifier: playerId,
+                playerJoined: initialSpawn,
             };
 
             const replacedCallback = {
@@ -201,6 +209,10 @@ class AfterEvents {
 
     public static EntityHurt(callback: (args: EntityHurtArgs) => void): void {
         this.subscribe("EntityHurt", callback);
+    };
+
+    public static EntityRemoved(callback: (args: EntityRemovedArgs) => void): void {
+        this.subscribe("EntityRemoved", callback);
     };
 
     public static EntitySpawned(callback: (args: EntitySpawnedArgs) => void): void {
