@@ -1,4 +1,4 @@
-import { Entity, Player, system, Vector3, world } from "@minecraft/server";
+import { CommandResult, Entity, Player, system, Vector3, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { PlayerManager } from "./PlayerManager";
 import { ConsoleManager } from "./ConsoleManager";
@@ -88,6 +88,14 @@ class EntityManager {
      */
     public setData(identifier: string, value: string | number | boolean | Vector3): void {
         new DynamicPropertyManager(this.instance.id + ":" + identifier).set(value);
+    };
+
+    public runCommand(command: string): CommandResult | Promise<CommandResult> {
+        try {
+            return this.instance.runCommand(command);
+        } catch {
+            return this.instance.runCommandAsync(command);
+        };
     };
 
     /**
