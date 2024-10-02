@@ -48,7 +48,7 @@ class BlockManager {
      * Gets the container from block.
      */
     public get container(): Container {
-        return this.instance.getComponent("inventory").container;
+        return this.instance.getComponent("inventory")?.container;
     };
 
     /**

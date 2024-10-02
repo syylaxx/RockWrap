@@ -42,13 +42,35 @@ class PlayerInventoryManager {
      * Clears selected item and it's amount.
      * @param item Information about deletion.
      */
-    public clearItem(item: ItemStackData): void {
-        this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount = 1}`);
+    public clearItem({ typeId, amount = Infinity }: ItemStackData): void {
+        let deletedAmount = 0;
+
+        for (const { itemStack, slot } of this.getInventory()) {
+            if (itemStack.typeId !== typeId) continue;
+
+            if (itemStack.amount <= amount - deletedAmount) {
+                deletedAmount += itemStack.amount;
+
+                this.container.setItem(slot);
+            } else {
+                itemStack.amount -= (amount - deletedAmount);
+
+                deletedAmount = amount;
+
+                this.container.setItem(slot, itemStack.instance);
+            };
+
+            if (deletedAmount >= amount) return;
+        };
     };
 
+    /**
+     * Clears selected items and their amount.
+     * @param items Information about deletion
+     */
     public clearItems(items: ItemStackData[]): void {
-        for (const item of items)
-            this.player.runCommandAsync(`clear "${this.player.name}" ${item.typeId} 0 ${item.amount}`);
+        for (const { typeId, amount } of items)
+            this.clearItem({ typeId, amount });
     };
 
     /**
@@ -92,7 +114,7 @@ class PlayerInventoryManager {
      * @param itemStack Default instance of item, that will be added.
      */
     public giveItem(itemStack: ItemStack): void {
-        this.inventory.container.addItem(itemStack);
+        this.container.addItem(itemStack);
     };
 
     /**
@@ -155,7 +177,7 @@ class PlayerManager {
             throw ConsoleManager.error(`Player was not defined correctly!`);
 
         if (!world.getPlayers().find((x) => x.id === player.id))
-            throw ConsoleManager.error(`Player '${this.instance.name}' could not be found!`);
+            throw ConsoleManager.error(`Player '${player.name}' could not be found!`);
 
         this.dimension = player.dimension;
         this.identifier = player.id;
@@ -231,6 +253,10 @@ class PlayerManager {
 
     public applyKnockback(directionX: number, directionZ: number, horizontalStrength: number, verticalStrength: number): void {
         this.instance.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
+    };
+
+    public applyImpulse(vector: Vector3) {
+        this.instance.applyImpulse(vector);
     };
 };
 

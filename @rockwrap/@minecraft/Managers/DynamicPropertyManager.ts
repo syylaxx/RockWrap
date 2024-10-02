@@ -1,4 +1,5 @@
 import { Vector3, world } from "@minecraft/server";
+import { DynamicPropertyValue } from "./types/DynamicPropertyValue";
 
 const isADynamicPropertyValue = (value: any): boolean => {
     return (
@@ -26,31 +27,18 @@ class DynamicPropertyManager {
      * @param replaceValue Default value of this property.
      * @returns Value of this identifier.
      */
-    public get(replaceValue: any = undefined): string {
-        if (!isADynamicPropertyValue(replaceValue))
-            replaceValue = JSON.stringify(replaceValue);
-
+    public get(replaceValue: any = undefined): DynamicPropertyValue {
         if (!world.getDynamicProperty(this.identifier))
             world.setDynamicProperty(this.identifier, replaceValue);
-
-        let dynamicProperty: string = world.getDynamicProperty(this.identifier) as string;
-
-        //console.warn(dynamicProperty)
-
-        if (!isADynamicPropertyValue && JSON.parse(dynamicProperty))
-            dynamicProperty = JSON.parse(dynamicProperty);
-
-        return dynamicProperty;
+        
+        return world.getDynamicProperty(this.identifier);
     };
 
     /**
      * Sets a value for this identifier.
      * @param value New value of identifier.
      */
-    public set(value: any = undefined): void {
-        if (JSON.parse(value))
-            value = JSON.parse(value);
-
+    public set(value: DynamicPropertyValue = undefined): void {
         world.setDynamicProperty(this.identifier, value);
     };
 

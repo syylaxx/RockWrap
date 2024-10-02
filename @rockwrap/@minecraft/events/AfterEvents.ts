@@ -158,9 +158,9 @@ class AfterEvents {
                 hitEntity,
                 damagingEntity,
                 target,
-                playerName,
                 playerId,
                 removedEntityId,
+                faceLocation
             } = callback;
             
             const cancelEvent = () => callback.cancel = true;
@@ -178,6 +178,7 @@ class AfterEvents {
                 entityIdentifier: removedEntityId,
                 playerIdentifier: playerId,
                 playerJoined: initialSpawn,
+                faceLocation,
             };
 
             const replacedCallback = {

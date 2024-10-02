@@ -14,7 +14,7 @@ class PlayerDataManager {
             identifier = new DynamicPropertyManager(name).get() as string;
 
         if (!identifier)
-            throw Error(`Player '${name}' was not registered.`);
+            throw Error(`Player '${name}' was not registered. Use RockWrap.startUp(); in Main.ts for registery.`);
 
         this.identifier = identifier;
     };

@@ -1,4 +1,4 @@
-import { Entity, Vector3, world } from "@minecraft/server";
+import { Entity, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import type { DynamicPropertyValue } from "./types/DynamicPropertyValue";
 
