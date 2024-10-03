@@ -24,14 +24,6 @@ class ConsoleManager {
     };
 
     /**
-     * Sends a debug message to console.
-     * @param message Content of a debug message.
-     */
-    public static debug(message: any): void {
-        console.debug(RockWrap.config["@console"].debug + message);
-    };
-
-    /**
      * Sends an error message to console.
      * @param message Content of an error.
      */

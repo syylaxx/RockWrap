@@ -50,7 +50,6 @@ const rockWrapConfiguration = Object.freeze({
      * Flags for special console of @rockwrap.
      */
     "@console": {
-        debug: "[DEBUG] ",
         error: "[ERROR] ",
         warn: "[WARN] ",
         info: "[INFO] ",
