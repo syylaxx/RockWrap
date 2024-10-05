@@ -1,5 +1,5 @@
 export { AfterEvents } from "./@minecraft/events/AfterEvents";
-export { BeforeEvents } from "./@minecraft/events/BeforeEvents";
+export * from "./@minecraft/events/BeforeEvents";
 export { BlockManager } from "./@minecraft/Managers/BlockManager";
 export { BlockVolumeManager } from "./@minecraft/Managers/BlockVolumeManager";
 export { ConsoleManager } from "./@minecraft/Managers/ConsoleManager";
