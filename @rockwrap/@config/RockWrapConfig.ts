@@ -7,7 +7,7 @@
  *  You can find more information about config at: https://github.com/syylaxx/RockWrap/blob/main/docs/config/index.md
  */
 
-const rockWrapConfiguration: Readonly<{ [key: string]: any }> = Object.freeze({
+const rockWrapConfiguration = Object.freeze({
     "@server": {
         /**
          * Activated modules on your world or server.
