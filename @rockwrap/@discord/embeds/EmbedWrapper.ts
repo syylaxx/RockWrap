@@ -3,6 +3,22 @@ import { IEmbedField } from "./interfaces/embed/IEmbedField";
 import { IEmbedWrapper } from "./interfaces/IEmbedWrapper";
 import type { EmbedContentTypes } from "./types/EmbedContentTypes";
 
+/**
+ * Class, that is designed to easily create Discord embeds.
+ * @example
+ * ```ts
+ * import { EmbedWrapper } from "@rockwrap/discord";
+ * 
+ * // Create a basic Discord embed.
+ * const embed: EmbedWrapper = new EmbedWrapper()
+ *      .setColor(0xFFAA00)
+ *      .setTitle("Title of an embed!")
+ *      .setDescription([
+ *          "Some long description, that you can split.",
+ *          "Pretty useful, right?"
+ *          // You can also pass just a string here.
+ *      ])
+ */
 class EmbedWrapper {
     private embedTitle: EmbedContentTypes = null;
     private embedDescription: EmbedContentTypes = null;
