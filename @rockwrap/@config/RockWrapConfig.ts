@@ -50,10 +50,10 @@ const rockWrapConfiguration = Object.freeze({
      * Flags for special console of @rockwrap.
      */
     "@console": {
-        error: "[ERROR] ",
-        warn: "[WARN] ",
-        info: "[INFO] ",
-        log: "[LOG] "
+        error: "\x1b[31m[ERROR] ",
+        warn: "\x1b[33m[WARN] ",
+        info: "\x1b[314[INFO] ",
+        log: "\x1b[32m[LOG] "
     }
 });
 
