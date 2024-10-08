@@ -1,6 +1,15 @@
-import { ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
+import { Enchantment, ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
 
-class ItemStackManager {
+interface IItemStackObject {
+    typeId: string,
+    nameTag: string,
+    amount: number,
+    lore: string[],
+    enchantments: Enchantment[],
+    damage: number
+};
+
+class ItemStackManager extends ItemStack{
     private durabilityComponent: ItemDurabilityComponent;
 
     /**
@@ -14,70 +23,34 @@ class ItemStackManager {
     public readonly maxDurability: number;
 
     /**
-     * Identifier of an item.
-     */
-    public readonly typeId: string;
-
-    /**
      * Creates an instance of custom item manager.
      * @param itemStack Default instance of an item.
      * @returns Instance of custom item manager.
      */
     public constructor(itemStack: ItemStack) {
+        super(itemStack.typeId, itemStack.amount);
+
         if (!(itemStack instanceof ItemStack))
             throw new Error(`ItemStack was not defined correctly!`);
 
         this.instance = itemStack;
-        this.typeId = itemStack.typeId;
 
-        if (!itemStack.getComponent("durability")) return;
-
-        this.durabilityComponent = itemStack.getComponent("durability");
-        this.maxDurability = itemStack.getComponent("durability").maxDurability;
+        this.durabilityComponent = itemStack.getComponent("durability") as ItemDurabilityComponent;
+        this.maxDurability = this.durabilityComponent ? this.durabilityComponent.maxDurability : 0;
     };
 
     /**
      * Component, that allows you to access item's enchantments.
      */
     public get enchantable(): ItemEnchantableComponent {
-        return this.instance.getComponent("enchantable");
-    };
-
-    /**
-     * Get's an item amount.
-     */
-    public get amount(): number {
-        return this.instance.amount;
-    };
-
-    /**
-     * Sets an item amount.
-     */
-    public set amount(value: number) {
-        this.instance.amount = value;
-    };
-
-    /**
-     * Gets a display name of an item.
-     */
-    public get nameTag(): string {
-        return this.instance.nameTag;
-    };
-
-    /**
-     * Sets a display name for item.
-     */
-    public set nameTag(value: string) {
-        this.instance.nameTag = value;
+        return this.instance.getComponent("enchantable") as ItemEnchantableComponent;
     };
 
     /**
      * Durability left on a item.
      */
     public get durability(): number {
-        const durabilityComponent = this.instance.getComponent("durability");
-
-        return durabilityComponent ? durabilityComponent.maxDurability - durabilityComponent.damage : 0;
+        return this.durabilityComponent ? this.durabilityComponent.maxDurability - this.durabilityComponent.damage : 0;
     };
 
     /**
@@ -90,6 +63,32 @@ class ItemStackManager {
             throw new Error("Durability must be within valid bounds.");
 
         this.durabilityComponent.damage = this.maxDurability - value;
+    };
+
+    public getObject(): IItemStackObject {
+        const { typeId, nameTag, amount } = this.instance;
+
+        const object = {
+            typeId, nameTag, amount,
+            lore: this.instance.getLore(),
+            enchantments: (this.instance.getComponent("enchantable") as ItemEnchantableComponent)?.getEnchantments(),
+            damage: (this.instance.getComponent("durability") as ItemDurabilityComponent)?.damage,
+        } as IItemStackObject;
+
+        return object;
+    };
+
+    public static getManager(object: IItemStackObject): ItemStackManager {
+        const { typeId, nameTag, amount, damage, lore, enchantments } = object;
+
+        const itemStack = new ItemStack(typeId, amount);
+
+        itemStack.nameTag = nameTag;
+        itemStack.setLore(lore);
+        (itemStack.getComponent("enchantable") as ItemEnchantableComponent)?.addEnchantments(enchantments);
+        itemStack.getComponent("durability") ? (itemStack.getComponent("durability") as ItemDurabilityComponent).damage = damage : null;
+
+        return new ItemStackManager(itemStack);
     };
 };
 
