@@ -1,2 +1,2 @@
-export { WebhookWrapper } from "./@discord/webhooks/WebhookWrapper";
-export { EmbedWrapper } from "./@discord/embeds/EmbedWrapper";
+export * from "./@discord/webhooks/WebhookWrapper";
+export * from "./@discord/embeds/EmbedWrapper";

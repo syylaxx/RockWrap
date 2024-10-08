@@ -1,22 +1,22 @@
 /**
  * Raw embed. Consider using IEmbedField interface instead.
  */
-
 interface IRawEmbedField {
     /**
      * Title of a field. 
      */
-    name: string,
+    readonly name: string,
     
     /**
      * Content of a field.
      */
-    value: string,
+    readonly value: string,
     
     /**
      * If field should be in-line with other ones. 
+     * @default false
      */
-    inline: boolean
+    readonly inline: boolean
 };
 
 export { IRawEmbedField };

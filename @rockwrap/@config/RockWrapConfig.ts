@@ -30,6 +30,7 @@ const rockWrapConfiguration = Object.freeze({
         /**
          * Default color of Discord embeds.
          * @type {number}
+         * @default 0x000000
          */
         embeds: {
             color: 0x000000
@@ -41,6 +42,7 @@ const rockWrapConfiguration = Object.freeze({
             /**
              * Default prefix of messages sent via our wrapper.
              * @type {string}
+             * @default "§8 » §7"
              */
             prefix: "§8 » §7"
         }
@@ -48,12 +50,13 @@ const rockWrapConfiguration = Object.freeze({
 
     /**
      * Flags for special console of @rockwrap.
+     * @remarks We do not recommend changing these values.
      */
     "@console": {
-        error: "[ERROR] ",
-        warn: "[WARN] ",
-        info: "[INFO] ",
-        log: "[LOG] "
+        error: "\x1b[31m[ERROR] ",
+        warn: "\x1b[33m[WARN] ",
+        info: "\x1b[314[INFO] ",
+        log: "\x1b[32m[LOG] "
     }
 });
 

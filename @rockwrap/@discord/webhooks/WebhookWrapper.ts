@@ -12,6 +12,28 @@ class WebhookWrapper {
      * @param uri URL of a webhook.
      * @param param1 Content of message.
      * @throws Function can throw error if you have not added `@minecraft/server-net` to your modules in config, or request was not send correct.
+     * @example
+     * ```ts
+     * // Basic imports.
+     * import { system } from "@minecraft/server";
+     * import { BeforeEvents, MessageSentArgs } from "@rockwrap/minecraft";
+     * import { WebhookUtility } from "@rockwrap/discord";
+     * 
+     * // Registers a event to listen.
+     * BeforeEvents.MessageSent((eventData: MessageSentArgs) => {
+     *      const { player, message } = eventData;
+     *      eventData.cancelEvent();
+     * 
+     *      // Sends a message to Discord via webhook.
+     *      // It requires privileges.
+     *      system.run((): void => {
+     *          WebhookUtility.sendWebhook("YOUR_WEBHOOK_URL_HERE", {
+     *              // Content of a message.
+     *              content: `${player.name}: ${message}`
+     *          });
+     *      });
+     * });
+     * ```
      */
     public static sendWebhook(uri: string, { content = "", embeds = [] }: IWebhookContent): void {
         if (!RockWrap.config["@server"].modules.includes("@minecraft/server-net")) throw new Error("ModuleError: You cannot use WebhookWrapper, if you have not added @minecraft/server-net to you modules.");

@@ -205,4 +205,4 @@ class BeforeEvents {
     };
 }
 
-export { BeforeEvents };
+export { BeforeEvents, BlockBrokenArgs, BlockPlacedArgs, EntityRemovedArgs, InteractedWithBlockArgs, InteractedWithEntityArgs, ItemPickedUpArgs, ItemUsedArgs, MessageSentArgs, PlayerLeftArgs };

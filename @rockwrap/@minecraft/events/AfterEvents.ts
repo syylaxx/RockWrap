@@ -121,20 +121,7 @@ const eventsData: CallbackType<any>[] = [
 ];
 
 class AfterEvents {
-    public static OnTick(callback: () => void): void {
-        const eventData = eventsData.find(event => event.identifier === "OnTick")
-
-        eventData.callbacks.push(callback);
-
-        if (eventData.isSubscribed) return;
-
-        eventData.isSubscribed = true;
-
-        system.runInterval((): void => {
-            for (const interval of eventData.callbacks as Array<() => void>)
-                interval();
-        }, 1);
-    };
+    private constructor() {};
 
     private static subscribe(identifier: string, callback: (arg: any) => void) {
         const eventData = eventsData.find(event => event.identifier === identifier);
@@ -190,6 +177,21 @@ class AfterEvents {
             for (const eventDataCallback of eventData.callbacks)
                 eventDataCallback(replacedCallback);
         });
+    };
+
+    public static OnTick(callback: () => void): void {
+        const eventData = eventsData.find(event => event.identifier === "OnTick")
+
+        eventData.callbacks.push(callback);
+
+        if (eventData.isSubscribed) return;
+
+        eventData.isSubscribed = true;
+
+        system.runInterval((): void => {
+            for (const interval of eventData.callbacks as Array<() => void>)
+                interval();
+        }, 1);
     };
 
     public static BlockBroken(callback: (args: BlockBrokenArgs) => void): void {

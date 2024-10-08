@@ -1,35 +1,39 @@
 import type { EmbedContentTypes } from "../types/EmbedContentTypes";
 import { IRawEmbedField } from "./raw/IRawEmbedField";
 
+/**
+ * JSON structure of an embed.
+ */
 interface IEmbedWrapper {
     /**
      * Type of a embed.
      * Keep it "rich" at this moment.
      */
-    type: "rich",
+    readonly type: "rich",
 
     /**
      * Title of a embed.
      * `null` means no title.
      */
-    title: EmbedContentTypes,
+    readonly title: EmbedContentTypes,
 
     /**
      * Description of a embed. 
      * `null` means no description.
      */
-    descripion: EmbedContentTypes,
+    readonly descripion: EmbedContentTypes,
 
     /**
      * Color of a embed.
-     * Default color you can configure using `@rockwrap/config`.
+     * @remarks Default color you can configure using `@rockwrap/config`.
+     * @default rockWrapConfiguration["@discord"].embeds.color
      */
-    color: number,
+    readonly color: number,
 
     /**
      * Fields of a embed.
      */
-    fields: IRawEmbedField[]
+    readonly fields: IRawEmbedField[]
 };
 
 export { IEmbedWrapper };
