@@ -3,7 +3,7 @@ import { Enchantment, ItemLockMode, Vector3 } from "@minecraft/server";
 type ItemPropertyValue = string | number | boolean | Vector3;
 type ItemProperty = [string, ItemPropertyValue];
 
-interface ItemStackObject {
+interface IItemStackObject {
     /**
      * ID of an item.
      */
@@ -39,7 +39,7 @@ interface ItemStackObject {
      *
      * For every property, the first index is the key and the second is the value.
      */
-    properties: ItemProperty[],
+    dynamicProperties: ItemProperty[],
 
     /**
      * Lore of this item.
@@ -63,4 +63,4 @@ interface ItemStackObject {
     enchantments: Enchantment[]
 }
 
-export { ItemProperty, ItemStackObject };
+export { ItemProperty, IItemStackObject };
