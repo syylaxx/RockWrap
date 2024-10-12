@@ -112,7 +112,7 @@ class BeforeEvents {
 
             const cancelEvent = (): void => {
                 player.inventory.clearItem({ typeId: itemStack.typeId, amount: itemStack.amount });
-                system.runTimeout(() => dimension.spawnItem(itemStack.instance, location).clearVelocity(), 10);
+                system.runTimeout(() => dimension.spawnItem(itemStack, location).clearVelocity(), 10);
             };
 
             for (const eventDataCallback of eventData.callbacks)

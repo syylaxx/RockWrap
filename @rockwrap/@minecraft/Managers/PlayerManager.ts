@@ -57,7 +57,7 @@ class PlayerInventoryManager {
 
                 deletedAmount = amount;
 
-                this.container.setItem(slot, itemStack.instance);
+                this.container.setItem(slot, itemStack);
             };
 
             if (deletedAmount >= amount) return;
