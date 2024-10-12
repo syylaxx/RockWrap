@@ -1,6 +1,6 @@
 import { ItemStack } from "@minecraft/server";
 import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager";
-import { ItemStackObject } from "./interfaces/ItemStackObject";
+import { ItemProperty, ItemStackObject } from "./interfaces/ItemStackObject";
 
 class ItemStackDataBase {
     private readonly identifier: string;
@@ -18,14 +18,37 @@ class ItemStackDataBase {
      * @param itemStack Item, which is going to be saved.
      */
     public saveItemStack(itemStack: ItemStack) {
-        const { typeId, nameTag, amount, getLore, getComponent } = itemStack;
+        const {
+          typeId,
+          amount,
+          nameTag,
+          getLore,
+          lockMode,
+          keepOnDeath,
+          getComponent,
+          getCanDestroy,
+          getCanPlaceOn,
+          getDynamicProperty,
+          getDynamicPropertyIds,
+        } = itemStack;
+
         const { getEnchantments } = getComponent("enchantable");
         const { damage } = getComponent("durability");
-        const data = {
-            typeId, nameTag, amount, damage,
+
+        const properties = getDynamicPropertyIds()
+                            .map((id): ItemProperty => ([
+                                id, 
+                                getDynamicProperty(id)
+                            ]))
+
+        const data: ItemStackObject = {
+            typeId, nameTag, amount, damage, lockMode, keepOnDeath, properties,
+
             lore: getLore(),
-            enchantments: getEnchantments()
-        };
+            canDestroy: getCanDestroy(),
+            canPlaceOn: getCanPlaceOn(),
+            enchantments: getEnchantments(),
+        }
 
         new DynamicPropertyManager(this.identifier).set(JSON.stringify(data));
     };
@@ -36,13 +59,31 @@ class ItemStackDataBase {
      */
     public getItemStack(): ItemStack {
         const data = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as ItemStackObject;
-        const { typeId, nameTag, amount, damage, lore, enchantments } = data;
+        const { 
+            typeId, nameTag, amount, damage, lockMode, keepOnDeath, properties,
+            
+            lore,
+            canDestroy,
+            canPlaceOn,
+            enchantments
+        } = data;
+
         const itemStack = new ItemStack(typeId, amount);
 
         itemStack.nameTag = nameTag;
+        itemStack.lockMode = lockMode;
+        itemStack.keepOnDeath = keepOnDeath;
+
+        properties.forEach((property)=>{
+            itemStack.setDynamicProperty(...property);
+        })
+
         itemStack.setLore(lore);
         itemStack.getComponent("durability").damage = damage;
         itemStack.getComponent("enchantable").addEnchantments(enchantments);
+
+        itemStack.setCanDestroy(canDestroy);
+        itemStack.setCanPlaceOn(canPlaceOn);
 
         return itemStack;
     };
