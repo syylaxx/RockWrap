@@ -1,4 +1,4 @@
-import { CommandResult, Container, Dimension, EntityComponentTypes, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
+import { CommandResult, Container, Dimension, EntityComponentTypes, EntityEquippableComponent, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { ItemStackManager } from "./ItemStackManager";
@@ -132,7 +132,7 @@ class PlayerInventoryManager {
      * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
      */
     public getItem(slot: number): ItemStackManager | undefined {
-        const itemStack = this.player.getComponent("inventory").container.getItem(slot);
+        const itemStack = (this.player.getComponent("inventory") as EntityInventoryComponent).container.getItem(slot);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
@@ -142,7 +142,7 @@ class PlayerInventoryManager {
      * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
      */
     public getMainHand(): ItemStackManager | undefined {
-        const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Mainhand);
+        const itemStack = (this.player.getComponent("equippable") as EntityEquippableComponent).getEquipment(EquipmentSlot.Mainhand);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };
@@ -152,7 +152,7 @@ class PlayerInventoryManager {
      * @returns Returns an custom item stack manager class if slot was not empty. Unless it's `undefined`.
      */
     public getOffHand(): ItemStackManager | undefined {
-        const itemStack = this.player.getComponent("equippable").getEquipment(EquipmentSlot.Offhand);
+        const itemStack = (this.player.getComponent("equippable") as EntityEquippableComponent).getEquipment(EquipmentSlot.Offhand);
 
         return itemStack ? new ItemStackManager(itemStack) : undefined;
     };

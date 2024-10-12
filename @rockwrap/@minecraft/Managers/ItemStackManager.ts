@@ -1,21 +1,8 @@
-import { Enchantment, ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
-
-interface IItemStackObject {
-    typeId: string,
-    nameTag: string,
-    amount: number,
-    lore: string[],
-    enchantments: Enchantment[],
-    damage: number
-};
+import { ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
+import { ItemProperty, IItemStackObject } from "../databases/interfaces/ItemStackObject";
 
 class ItemStackManager extends ItemStack{
     private durabilityComponent: ItemDurabilityComponent;
-
-    /**
-     * Default instance of an item.
-     */
-    public readonly instance: ItemStack;
 
     /**
      * Max durability of an item.
@@ -24,18 +11,22 @@ class ItemStackManager extends ItemStack{
 
     /**
      * Creates an instance of custom item manager.
-     * @param itemStack Default instance of an item.
+     * @param itemStack Default instance of an item or correct typeId.
      * @returns Instance of custom item manager.
      */
-    public constructor(itemStack: ItemStack) {
-        super(itemStack.typeId, itemStack.amount);
-
-        if (!(itemStack instanceof ItemStack))
+    public constructor(itemStack: ItemStack | string) {
+        if (!(itemStack instanceof ItemStack) && typeof itemStack !== "string")
             throw new Error(`ItemStack was not defined correctly!`);
 
-        this.instance = itemStack;
+        if (typeof itemStack === "string" && !new ItemStack(itemStack)?.typeId)
+            throw new Error(`TypeId : '${itemStack}' does not exist!`);
 
-        this.durabilityComponent = itemStack.getComponent("durability") as ItemDurabilityComponent;
+        super(
+            itemStack instanceof ItemStack ? itemStack.typeId : itemStack as string,
+            itemStack instanceof ItemStack ? itemStack.amount : 1
+        );
+
+        this.durabilityComponent = this.getComponent("durability") as ItemDurabilityComponent;
         this.maxDurability = this.durabilityComponent ? this.durabilityComponent.maxDurability : 0;
     };
 
@@ -43,7 +34,7 @@ class ItemStackManager extends ItemStack{
      * Component, that allows you to access item's enchantments.
      */
     public get enchantable(): ItemEnchantableComponent {
-        return this.instance.getComponent("enchantable") as ItemEnchantableComponent;
+        return this.getComponent("enchantable") as ItemEnchantableComponent;
     };
 
     /**
@@ -66,27 +57,65 @@ class ItemStackManager extends ItemStack{
     };
 
     public getObject(): IItemStackObject {
-        const { typeId, nameTag, amount } = this.instance;
+        const {
+            typeId,
+            amount,
+            nameTag,
+            lockMode,
+            keepOnDeath,
+            getDynamicProperty,
+        } = this
 
-        const object = {
-            typeId, nameTag, amount,
-            lore: this.instance.getLore(),
-            enchantments: (this.instance.getComponent("enchantable") as ItemEnchantableComponent)?.getEnchantments(),
-            damage: (this.instance.getComponent("durability") as ItemDurabilityComponent)?.damage,
-        } as IItemStackObject;
+        const enchantableComponent = this.getComponent("enchantable") as ItemEnchantableComponent;
+        const durabilityComponent = this.getComponent("durability") as ItemDurabilityComponent;
+
+        const dynamicProperties = this.getDynamicPropertyIds()
+            .map((id): ItemProperty => ([
+                id, 
+                getDynamicProperty(id)
+            ]));
+
+        const object: IItemStackObject = {
+            amount, dynamicProperties, keepOnDeath, lockMode, nameTag, typeId,
+
+            damage: durabilityComponent?.damage,
+            canDestroy: this.getCanDestroy(),
+            canPlaceOn: this.getCanPlaceOn(),
+            enchantments: enchantableComponent?.getEnchantments(),
+            lore: this.getLore(),
+        };
 
         return object;
     };
 
     public static getManager(object: IItemStackObject): ItemStackManager {
-        const { typeId, nameTag, amount, damage, lore, enchantments } = object;
+        const { 
+            typeId, nameTag, amount, damage, lockMode, keepOnDeath, dynamicProperties,
+            
+            lore,
+            canDestroy,
+            canPlaceOn,
+            enchantments
+        } = object;
 
         const itemStack = new ItemStack(typeId, amount);
 
         itemStack.nameTag = nameTag;
+        itemStack.lockMode = lockMode;
+        itemStack.keepOnDeath = keepOnDeath;
+
+        dynamicProperties.forEach((property)=>{
+            itemStack.setDynamicProperty(...property);
+        });
+
         itemStack.setLore(lore);
-        (itemStack.getComponent("enchantable") as ItemEnchantableComponent)?.addEnchantments(enchantments);
+
         itemStack.getComponent("durability") ? (itemStack.getComponent("durability") as ItemDurabilityComponent).damage = damage : null;
+
+        (itemStack.getComponent("enchantable") as ItemEnchantableComponent)?.addEnchantments(enchantments);
+
+        itemStack.setCanDestroy(canDestroy);
+        itemStack.setCanPlaceOn(canPlaceOn);
 
         return new ItemStackManager(itemStack);
     };

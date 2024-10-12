@@ -1,6 +1,7 @@
 import { ItemStack } from "@minecraft/server";
 import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager";
-import { ItemStackObject } from "./interfaces/ItemStackObject";
+import { IItemStackObject } from "./interfaces/ItemStackObject";
+import { ItemStackManager } from "../Managers/ItemStackManager";
 
 class ItemStackDataBase {
     private readonly identifier: string;
@@ -18,33 +19,19 @@ class ItemStackDataBase {
      * @param itemStack Item, which is going to be saved.
      */
     public saveItemStack(itemStack: ItemStack) {
-        const { typeId, nameTag, amount, getLore, getComponent } = itemStack;
-        const { getEnchantments } = getComponent("enchantable");
-        const { damage } = getComponent("durability");
-        const data = {
-            typeId, nameTag, amount, damage,
-            lore: getLore(),
-            enchantments: getEnchantments()
-        };
+        const object = new ItemStackManager(itemStack).getObject();
 
-        new DynamicPropertyManager(this.identifier).set(JSON.stringify(data));
+        new DynamicPropertyManager(this.identifier).set(JSON.stringify(object));
     };
 
     /**
      * Gets saved ItemStack.
-     * @returns Item as ItemStack instance. 
+     * @returns Item as ItemStackManager. 
      */
-    public getItemStack(): ItemStack {
-        const data = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as ItemStackObject;
-        const { typeId, nameTag, amount, damage, lore, enchantments } = data;
-        const itemStack = new ItemStack(typeId, amount);
+    public getItemStack(): ItemStackManager {
+        const object = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as IItemStackObject;
 
-        itemStack.nameTag = nameTag;
-        itemStack.setLore(lore);
-        itemStack.getComponent("durability").damage = damage;
-        itemStack.getComponent("enchantable").addEnchantments(enchantments);
-
-        return itemStack;
+        return ItemStackManager.getManager(object)
     };
 
     /**
