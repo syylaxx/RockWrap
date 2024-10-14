@@ -172,17 +172,29 @@ class PlayerManager {
     public readonly instance: Player;
     public readonly name: string;
 
-    public constructor(player: Player) {
-        if (!(player instanceof Player))
+    /**
+     * Creates an instance of a Manager for the Player Class.
+     * @param player Player, can be either Player Class, Player.name or Player.id.
+     */
+
+    public constructor(player: Player | string) {
+        if (!(player instanceof Player) && typeof player !== "string")
             throw ConsoleManager.error(`Player was not defined correctly!`);
 
-        if (!world.getPlayers().find((x) => x.id === player.id))
-            throw ConsoleManager.error(`Player '${player.name}' could not be found!`);
+        if (typeof player === "string") {
+            const foundPlayer = world.getPlayers().find((x) => x.id === player || x.name === player);
 
-        this.dimension = player.dimension;
-        this.identifier = player.id;
-        this.instance = player;
-        this.name = player.name;
+            if (!foundPlayer)
+                throw ConsoleManager.error(`Player '${player}' could not be found!`);
+
+            this.instance = foundPlayer;
+        } else {
+            this.instance = player;
+        };
+
+        this.dimension = this.instance.dimension;
+        this.identifier = this.instance.id;
+        this.name = this.instance.name;
     };
     
     public get nameTag(): string {
