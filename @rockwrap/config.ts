@@ -18,4 +18,4 @@ class RockWrap {
     };
 };
 
-export { RockWrap };
+export { RockWrap, rockWrapConfiguration };
