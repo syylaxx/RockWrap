@@ -1,6 +1,6 @@
 type CallbackType<T> = {
     identifier: string,
-    event: string,
+    event: any,
     isSubscribed: boolean,
     callbacks: ((args: T) => void)[]
 };

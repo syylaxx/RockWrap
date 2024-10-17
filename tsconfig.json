@@ -9,15 +9,19 @@
         "checkJs": false,
         "allowJs": false,
 
-        "allowSyntheticDefaultImports": false,
+        "allowSyntheticDefaultImports": true,
         "moduleResolution": "Node",
 
         "rootDir": "./@rockwrap",
-        "outDir": "./@rockwrap-dist"
+        "outDir": "./@rockwrap-dist",
+
+        "declaration": true
     },
 
     "include": [
-        "@rockwrap"
+        "@rockwrap/minecraft.ts",
+        "@rockwrap/discord.ts",
+        "@rockwrap/config.ts"
     ],
 
     "exclude": [

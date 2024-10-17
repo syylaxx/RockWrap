@@ -1,20 +1,23 @@
 {
     "name": "rockwrap",
     "version": "1.0.0",
-    "description": "<p align=\"center\">   <img src=\"public/assets/RockWrap.png\" /> </p>",
-    "main": "index.js",
-    "directories": {
-        "doc": "docs"
-    },
+    "author": "syylaxx",
+    "main": "@rockwrap/minecraft.js",
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "build": "tsc",
+        "start": "node @rockwrap-dist/index.js"
     },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
     "dependencies": {
         "@minecraft/server": "^1.14.0-beta.1.21.20-stable",
         "@minecraft/server-net": "^1.0.0-beta.1.21.20-stable",
         "@minecraft/server-ui": "^1.3.0-beta.1.21.20-stable"
-    }
-}
+    },
+    "files": [
+        "@rockwrap/",
+        "LICENSE",
+        "README.md",
+        "public/",
+        "docs/"
+    ]
+  }
+  

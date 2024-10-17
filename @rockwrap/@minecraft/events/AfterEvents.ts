@@ -1,4 +1,4 @@
-import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause, Direction, Vector3 } from "@minecraft/server";
+import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause, Direction, Vector3, ScriptEventSource } from "@minecraft/server";
 
 import { PlayerManager } from "../Managers/PlayerManager";
 import { BlockManager } from "../Managers/BlockManager";
@@ -20,77 +20,78 @@ interface ItemUsedOnArgs { readonly block: BlockManager, readonly blockFace: Dir
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly playerIdentifier: string, readonly playerName: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
+interface ScriptEventArgs { readonly id, readonly initiator?: EntityManager, readonly message: string, readonly sourceType: ScriptEventSource };
 
 const eventsData: CallbackType<any>[] = [
     {
         identifier: "BlockBroken",
-        event: "playerBreakBlock",
+        event: world.afterEvents.playerBreakBlock,
         isSubscribed: false,
         callbacks: [] as Array<(args: BlockBrokenArgs) => void>
     },
     {
         identifier: "BlockPlaced",
-        event: "playerPlaceBlock",
+        event: world.afterEvents.playerPlaceBlock,
         isSubscribed: false,
         callbacks: [] as Array<(args: BlockPlacedArgs) => void>
     },
     {
         identifier: "ButtonPushed",
-        event: "buttonPush",
+        event: world.afterEvents.buttonPush,
         isSubscribed: false,
         callbacks: [] as Array<(args: ButtonPushedArgs) => void>
     },
     {
         identifier: "EntityHitEntity",
-        event: "entityHitEntity",
+        event: world.afterEvents.entityHitEntity,
         isSubscribed: false,
         callbacks: [] as Array<(args: EntityHitEntityArgs) => void>
     },
     {
         identifier: "EntityHurt",
-        event: "entityHurt",
+        event: world.afterEvents.entityHurt,
         isSubscribed: false,
         callbacks: [] as Array<(args: EntityHurtArgs) => void>
     },
     {
         identifier: "EntityRemoved",
-        event: "entityRemove",
+        event: world.afterEvents.entityRemove,
         isSubscribed: false,
         callbacks: [] as Array<(args: EntityRemovedArgs) => void>
     },
     {
         identifier: "EntitySpawned",
-        event: "entitySpawn",
+        event: world.afterEvents.entitySpawn,
         isSubscribed: false,
         callbacks: [] as Array<(args: EntitySpawnedArgs) => void>
     },
     {
         identifier: "InteractedWithBlock",
-        event: "playerInteractWithBlock",
+        event: world.afterEvents.playerInteractWithBlock,
         isSubscribed: false,
         callbacks: [] as Array<(args: InteractedWithBlockArgs) => void>
     },
     {
         identifier: "InteractedWithEntity",
-        event: "playerInteractWithEntity",
+        event: world.afterEvents.playerInteractWithEntity,
         isSubscribed: false,
         callbacks: [] as Array<(args: InteractedWithEntityArgs) => void>
     },
     {
         identifier: "ItemUsed",
-        event: "itemUse",
+        event: world.afterEvents.itemUse,
         isSubscribed: false,
         callbacks: [] as Array<(args: ItemUsedArgs) => void>
     },
     {
         identifier: "ItemUsedOn",
-        event: "itemUseOn",
+        event: world.afterEvents.itemUseOn,
         isSubscribed: false,
         callbacks: [] as Array<(args: ItemUsedOnArgs) => void>
     },
     {
         identifier: "MessageSent",
-        event: "chatSend",
+        event: world.afterEvents.chatSend,
         isSubscribed: false,
         callbacks: [] as Array<(args: MessageSentArgs) => void>
     },
@@ -102,19 +103,25 @@ const eventsData: CallbackType<any>[] = [
     },
     {
         identifier: "PlayerLeft",
-        event: "playerLeave",
+        event: world.afterEvents.playerLeave,
         isSubscribed: false,
         callbacks: [] as Array<(args: PlayerLeftArgs) => void>
     },
     {
         identifier: "PlayerSpawned",
-        event: "playerSpawn",
+        event: world.afterEvents.playerSpawn,
         isSubscribed: false,
         callbacks: [] as Array<(args: PlayerSpawnedArgs) => void>
     },
     {
+        identifier: "ScriptEventReceived",
+        event: system.afterEvents.scriptEventReceive,
+        isSubscribed: false,
+        callbacks: [] as Array<() => void>
+    },
+    {
         identifier: "WorldInitialized",
-        event: "worldInitialize",
+        event: world.afterEvents.worldInitialize,
         isSubscribed: false,
         callbacks: [] as Array<() => void>
     },
@@ -132,10 +139,11 @@ class AfterEvents {
 
         eventData.isSubscribed = true;
 
-        world.afterEvents[eventData.event].subscribe((callback: any) => {
+        eventData.event.subscribe((callback: any) => {
             const {
                 block,
                 initialSpawn,
+                initiator,
                 itemStack,
                 sender,
                 source,
@@ -149,8 +157,6 @@ class AfterEvents {
                 removedEntityId,
                 faceLocation
             } = callback;
-            
-            const cancelEvent = () => callback.cancel = true;
 
             const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
             const getPlayer: Player = source instanceof Player ? source : sender ?? player;
@@ -159,6 +165,7 @@ class AfterEvents {
                 block: block ? new BlockManager(block) : undefined,
                 entity: getEntity ? new EntityManager(getEntity) : undefined,
                 hitEntity: hitEntity ? new EntityManager(hitEntity) : undefined,
+                initiator: initiator ? new EntityManager(initiator) : undefined,
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
 
@@ -170,8 +177,7 @@ class AfterEvents {
 
             const replacedCallback = {
                 ...callback,
-                ...properties,
-                cancelEvent
+                ...properties
             };
         
             for (const eventDataCallback of eventData.callbacks)
@@ -248,6 +254,10 @@ class AfterEvents {
 
     public static PlayerSpawned(callback: (args: PlayerSpawnedArgs) => void): void {
         this.subscribe("PlayerSpawned", callback);
+    };
+
+    public static ScriptEventReceived(callback: (args: ScriptEventArgs) => void): void {
+        this.subscribe("ScriptEventReceived", callback);
     };
 
     public static WorldInitialized(callback: () => void): void {

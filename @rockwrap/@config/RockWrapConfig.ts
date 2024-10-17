@@ -7,7 +7,7 @@
  *  You can find more information about config at: https://github.com/syylaxx/RockWrap/blob/main/docs/config/index.md
  */
 
-const rockWrapConfiguration = Object.freeze({
+const rockWrapConfiguration = {
     "@server": {
         /**
          * Activated modules on your world or server.
@@ -58,6 +58,6 @@ const rockWrapConfiguration = Object.freeze({
         info: "\x1b[314[INFO] ",
         log: "\x1b[32m[LOG] "
     }
-});
+};
 
 export { rockWrapConfiguration };
