@@ -12,22 +12,9 @@
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "Node",
 
-        "rootDir": "./@rockwrap",
-        "outDir": "./@rockwrap-dist",
+        "rootDir": "./",
+        "outDir": "./dist",
 
         "declaration": true
-    },
-
-    "include": [
-        "@rockwrap/minecraft.ts",
-        "@rockwrap/discord.ts",
-        "@rockwrap/config.ts"
-    ],
-
-    "exclude": [
-        "@rockwrap-dist",
-        "node_modules",
-        "public",
-        "docs",
-    ]
+    }
 }

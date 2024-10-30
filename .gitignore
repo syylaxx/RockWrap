@@ -1,3 +1,6 @@
+manifest.json
+Main.ts
+scripts/
 node_modules/
 @rockwrap-dist/
 @rockwrap/@minecraft/databases/RockDataBase.ts
