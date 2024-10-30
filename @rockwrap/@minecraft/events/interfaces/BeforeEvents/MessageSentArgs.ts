@@ -1,4 +1,4 @@
-import { PlayerManager } from "../../../Managers/PlayerManager";
+import { PlayerManager } from "../../../managers/PlayerManager";
 import { BeforeEventArgs } from "./BeforeEventArgs";
 
 interface MessageSentArgs extends BeforeEventArgs {

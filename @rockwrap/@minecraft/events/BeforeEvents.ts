@@ -1,8 +1,8 @@
 import { Entity, Player, system, world } from "@minecraft/server";
-import { BlockManager } from "../Managers/BlockManager";
-import { ItemStackManager } from "../Managers/ItemStackManager";
-import { PlayerManager } from "../Managers/PlayerManager";
-import { EntityManager } from "../Managers/EntityManager";
+import { BlockManager } from "../managers/BlockManager";
+import { ItemStackManager } from "../managers/ItemStackManager";
+import { PlayerManager } from "../managers/PlayerManager";
+import { EntityManager } from "../managers/EntityManager";
 import type { CallbackType } from "./types/CallbackType";
 
 import { BlockBrokenArgs } from "./interfaces/BeforeEvents/BlockBrokenArgs";

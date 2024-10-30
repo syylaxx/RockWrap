@@ -1,5 +1,5 @@
-import { EntityManager } from "../../../Managers/EntityManager";
-import { PlayerManager } from "../../../Managers/PlayerManager";
+import { EntityManager } from "../../../managers/EntityManager";
+import { PlayerManager } from "../../../managers/PlayerManager";
 import { BeforeEventArgs } from "./BeforeEventArgs";
 
 interface InteractedWithEntityArgs extends BeforeEventArgs {

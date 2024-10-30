@@ -1,5 +1,5 @@
 import { AfterEvents } from "../../events/AfterEvents";
-import { DynamicPropertyManager } from "../../Managers/DynamicPropertyManager";
+import { DynamicPropertyManager } from "../../managers/DynamicPropertyManager";
 
 /**
  * Registers player's database for `@rockwrap` modules.

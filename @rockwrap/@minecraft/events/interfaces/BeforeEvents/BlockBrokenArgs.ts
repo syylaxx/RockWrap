@@ -1,6 +1,6 @@
-import { BlockManager } from "../../../Managers/BlockManager";
-import { ItemStackManager } from "../../../Managers/ItemStackManager";
-import { PlayerManager } from "../../../Managers/PlayerManager";
+import { BlockManager } from "../../../managers/BlockManager";
+import { ItemStackManager } from "../../../managers/ItemStackManager";
+import { PlayerManager } from "../../../managers/PlayerManager";
 import { BeforeEventArgs } from "./BeforeEventArgs";
 
 interface BlockBrokenArgs extends BeforeEventArgs {

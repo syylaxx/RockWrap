@@ -1,9 +1,9 @@
 import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause, Direction, Vector3, ScriptEventSource } from "@minecraft/server";
 
-import { PlayerManager } from "../Managers/PlayerManager";
-import { BlockManager } from "../Managers/BlockManager";
-import { ItemStackManager } from "../Managers/ItemStackManager";
-import { EntityManager } from "../Managers/EntityManager";
+import { PlayerManager } from "../managers/PlayerManager";
+import { BlockManager } from "../managers/BlockManager";
+import { ItemStackManager } from "../managers/ItemStackManager";
+import { EntityManager } from "../managers/EntityManager";
 import { CallbackType } from "./types/CallbackType";
 
 interface BlockBrokenArgs { readonly block: BlockManager, readonly brokenBlockPermutation: BlockPermutation, readonly itemStack: ItemStackManager, readonly player: PlayerManager };

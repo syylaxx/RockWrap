@@ -1,4 +1,4 @@
-import { EntityManager } from "../../../Managers/EntityManager";
+import { EntityManager } from "../../../managers/EntityManager";
 
 interface EntityRemovedArgs {
     readonly entity: EntityManager,

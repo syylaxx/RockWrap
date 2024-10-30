@@ -1,7 +1,7 @@
 import { ItemStack } from "@minecraft/server";
-import { DynamicPropertyManager } from "../Managers/DynamicPropertyManager";
+import { DynamicPropertyManager } from "../managers/DynamicPropertyManager";
 import { IItemStackObject } from "./interfaces/ItemStackObject";
-import { ItemStackManager } from "../Managers/ItemStackManager";
+import { ItemStackManager } from "../managers/ItemStackManager";
 
 class ItemStackDataBase {
     private readonly identifier: string;

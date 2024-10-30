@@ -1,5 +1,5 @@
-import { BlockManager } from "../../../Managers/BlockManager";
-import { PlayerManager } from "../../../Managers/PlayerManager";
+import { BlockManager } from "../../../managers/BlockManager";
+import { PlayerManager } from "../../../managers/PlayerManager";
 import { BeforeEventArgs } from "./BeforeEventArgs";
 
 interface InteractedWithBlockArgs extends BeforeEventArgs {
