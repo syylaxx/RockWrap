@@ -20,7 +20,7 @@ interface ItemUsedOnArgs { readonly block: BlockManager, readonly blockFace: Dir
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly playerIdentifier: string, readonly playerName: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
-interface ScriptEventArgs { readonly id, readonly initiator?: EntityManager, readonly message: string, readonly sourceType: ScriptEventSource };
+interface ScriptEventArgs { readonly id: string, readonly initiator?: EntityManager, readonly message: string, readonly sourceType: ScriptEventSource };
 
 const eventsData: CallbackType<any>[] = [
     {
