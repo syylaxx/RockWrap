@@ -10,7 +10,7 @@
     },
     "dependencies": {
         "@minecraft/server": "^1.16.0-beta.1.21.40-stable",
-        "@minecraft/server-net": "^1.0.0-beta.1.21.40-stable",
+        "@minecraft/server-net": "^1.0.0-beta.1.21.30-stable",
         "@minecraft/server-ui": "^1.4.0-beta.1.21.40-stable"
     },
     "files": [

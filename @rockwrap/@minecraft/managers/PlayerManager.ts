@@ -1,9 +1,10 @@
-import { CommandResult, Container, Dimension, EntityComponentTypes, EntityEquippableComponent, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, system, Vector3, world } from "@minecraft/server";
+import { CommandResult, Container, Dimension, Effect, EntityApplyDamageByProjectileOptions, EntityApplyDamageOptions, EntityComponentTypeMap, EntityEquippableComponent, EntityInventoryComponent, EquipmentSlot, GameMode, ItemStack, Player, PlayerSoundOptions, RawText, ScreenDisplay, system, Vector3, world } from "@minecraft/server";
 
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { ItemStackManager } from "./ItemStackManager";
 import { ConsoleManager } from "./ConsoleManager";
 import { rockWrapConfiguration } from "../../@config/RockWrapConfig";
+import { AfterEvents } from "../events/AfterEvents";
 
 interface EffectOptions { duration?: number, amplifier?: number, showParticles?: boolean, infinity?: boolean };
 interface InventorySlot { itemStack: ItemStackManager, slot: number };
@@ -29,7 +30,7 @@ class PlayerInventoryManager {
      */
     public get container(): Container {
         return this.inventory.container;
-    }; 
+    };
 
     /**
      * Clears all items from inventory.
@@ -92,7 +93,7 @@ class PlayerInventoryManager {
      * @returns An array with item and their position in player's inventory.
      */
     public getInventory(): InventorySlot[] {
-        const inventory = [ ];
+        const inventory = [];
 
         for (let i = 0; i < this.inventory.inventorySize; i++) {
             const itemStack = this.inventory.container.getItem(i);
@@ -196,7 +197,7 @@ class PlayerManager {
         this.identifier = this.instance.id;
         this.name = this.instance.name;
     };
-    
+
     public get nameTag(): string {
         return this.instance.nameTag;
     };
@@ -205,16 +206,84 @@ class PlayerManager {
         this.instance.nameTag = value;
     };
 
+    public get location(): Vector3 {
+        return this.instance.location;
+    };
+
+    public set location(vector: Vector3) {
+        this.instance.teleport(vector, { keepVelocity: true });
+    };
+
+    public get health(): number {
+        return this.getComponent("health").currentValue;
+    };
+
+    public set health(value: number) {
+        this.getComponent("health").setCurrentValue(value);
+    };
+
+    public get velocity(): Vector3 {
+        return this.instance.getVelocity();
+    };
+
+    public set velocity(vector : Vector3) {
+        this.instance.applyImpulse(vector);
+    };
+
+    public get level(): number {
+        return this.instance.level;
+    };
+
+    public set level(value: number) {
+        this.instance.addLevels(this.level - value);
+    };
+
+    public get mainHandSlot(): number {
+        return this.instance.selectedSlotIndex;
+    };
+
+    public startItemCooldown(cooldownCategory: string, tickDuration: number): void {
+        this.instance.startItemCooldown(cooldownCategory, tickDuration);
+    };
+
     public get inventory(): PlayerInventoryManager {
         return new PlayerInventoryManager(this.instance.getComponent("inventory") as EntityInventoryComponent);
+    };
+
+    public get hud(): ScreenDisplay {
+        return this.instance.onScreenDisplay;
+    };
+
+    public resetVelocity(): void {
+        this.instance.clearVelocity();
+    };
+
+    public eatItem(itemStack: ItemStack): void {
+        this.instance.eatItem(itemStack);
+    };
+
+    public stopFire(): void {
+        this.instance.extinguishFire();
+    };
+
+    public setFire(seconds: number, useEffects?: boolean): void {
+        this.instance.setOnFire(seconds, useEffects);
     };
 
     public getGameMode(): GameMode {
         return this.instance.getGameMode();
     };
 
+    public setGameMode(gamemode: GameMode): void {
+        this.instance.setGameMode(gamemode);
+    };
+
     public isOp(): boolean {
         return this.instance.isOp();
+    };
+
+    public setOp(): void {
+        this.instance.setOp(false);
     };
 
     public runCommand(command: string): CommandResult | Promise<CommandResult> {
@@ -225,7 +294,15 @@ class PlayerManager {
         };
     };
 
-    public kick(reason: string = ""): void {
+    public damage(amount: number, options?: EntityApplyDamageByProjectileOptions | EntityApplyDamageOptions): boolean {
+        return this.instance.applyDamage(amount, options);
+    };
+
+    public kill(): boolean {
+        return this.instance.kill();
+    };
+
+    public kick(reason: string | RawText = ""): void {
         this.runCommand(`kick "${this.instance.name}" ${reason}`);
     };
 
@@ -238,36 +315,42 @@ class PlayerManager {
     };
 
     public sendMessage(text: string | string[] | number | RawText): void {
-        if (typeof text === "number") {
-            this.instance.sendMessage(messagePrefix + String(text));
-        } else {
-            this.instance.sendMessage(messagePrefix + text);
-        };
+        this.instance.sendMessage(messagePrefix + text);
     };
 
     public addEffect(type: string, { duration = 20 * 20, amplifier = 0, showParticles = true, infinity = false }: EffectOptions): void {
         if (infinity) {
-            system.runInterval(() => {
-                this.instance.addEffect(type, 21, { amplifier: amplifier, showParticles: showParticles });
-            }, 20);
+            AfterEvents.OnTick(() => {
+                if (system.currentTick % 20 !== 0) return;
+
+                this.instance.addEffect(type, 21, { amplifier, showParticles });
+            });
         } else {
-            this.instance.addEffect(type, duration, { amplifier: amplifier, showParticles: showParticles });
+            this.instance.addEffect(type, duration, { amplifier, showParticles });
         };
     };
 
-    public playSound(type: string, options: PlayerSoundOptions = undefined): void {
+    public getEffects(): Effect[] {
+        return this.instance.getEffects();
+    };
+
+    public getViewDirection(): Vector3 {
+        return this.instance.getViewDirection();
+    };
+
+    public playSound(type: string, options?: PlayerSoundOptions): void {
         this.instance.playSound(type, options);
     };
 
-    public getComponent(component: EntityComponentTypes) {
-        return this.instance.getComponent(component);
+    public getComponent<T extends keyof EntityComponentTypeMap>(component: T): EntityComponentTypeMap[T] {
+        return this.instance.getComponent(component) as EntityComponentTypeMap[T];
     };
 
     public applyKnockback(directionX: number, directionZ: number, horizontalStrength: number, verticalStrength: number): void {
         this.instance.applyKnockback(directionX, directionZ, horizontalStrength, verticalStrength);
     };
 
-    public applyImpulse(vector: Vector3) {
+    public applyImpulse(vector: Vector3): void {
         this.instance.applyImpulse(vector);
     };
 };
