@@ -155,7 +155,8 @@ class AfterEvents {
                 target,
                 playerId,
                 removedEntityId,
-                faceLocation
+                faceLocation,
+                damageSource
             } = callback;
 
             const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
@@ -173,6 +174,7 @@ class AfterEvents {
                 playerIdentifier: playerId,
                 playerJoined: initialSpawn,
                 faceLocation,
+                damageSource,
             };
 
             const replacedCallback = {
