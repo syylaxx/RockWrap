@@ -149,6 +149,14 @@ class EntityManager {
     public getComponent<T extends keyof EntityComponentTypeMap>(component: T): EntityComponentTypeMap[T] {
         return this.instance.getComponent(component) as EntityComponentTypeMap[T];
     };
+
+    public remove(): void {
+        this.instance.remove();
+    };
+
+    public kill(): boolean {
+        return this.instance.kill();
+    };
 };
 
 export { EntityManager };
