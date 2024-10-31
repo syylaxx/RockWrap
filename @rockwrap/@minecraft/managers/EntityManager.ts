@@ -1,4 +1,4 @@
-import { CommandResult, Entity, Player, system, Vector3, world } from "@minecraft/server";
+import { CommandResult, Entity, EntityApplyDamageByProjectileOptions, EntityApplyDamageOptions, EntityComponentTypeMap, Player, system, Vector3, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import { PlayerManager } from "./PlayerManager";
 import { ConsoleManager } from "./ConsoleManager";
@@ -19,12 +19,6 @@ class EntityManager {
     public readonly instance: Entity;
 
     /**
-     * Location of this entity.
-     * @readonly
-     */
-    public readonly location: Vector3;
-
-    /**
      * Identifier of this entity.
      * @readonly
      */
@@ -43,7 +37,6 @@ class EntityManager {
 
         this.instance = entity;
         this.identifier = entity.id;
-        this.location = entity.location;
         this.typeId = entity.typeId;
     };
 
@@ -59,6 +52,30 @@ class EntityManager {
      */
     public set nameTag(value: string) {
         this.instance.nameTag = value;
+    };
+
+    public get location(): Vector3 {
+        return this.instance.location;
+    };
+
+    public set location(vector: Vector3) {
+        this.instance.teleport(vector, { keepVelocity: true });
+    };
+
+    public get health(): number {
+        return this.getComponent("health").currentValue;
+    };
+
+    public set health(value: number) {
+        this.getComponent("health").setCurrentValue(value);
+    };
+
+    public get velocity(): Vector3 {
+        return this.instance.getVelocity();
+    };
+
+    public set velocity(vector: Vector3) {
+        this.instance.applyImpulse(vector);
     };
 
     /**
@@ -111,6 +128,26 @@ class EntityManager {
         } else {
             this.instance.addEffect(type, duration, { amplifier: amplifier, showParticles: showParticles });
         };
+    };
+
+    public stopFire(): void {
+        this.instance.extinguishFire();
+    };
+
+    public setFire(seconds: number, useEffects?: boolean): void {
+        this.instance.setOnFire(seconds, useEffects);
+    };
+
+    public resetVelocity(): void {
+        this.instance.clearVelocity();
+    };
+
+    public damage(amount: number, options?: EntityApplyDamageByProjectileOptions | EntityApplyDamageOptions): boolean {
+        return this.instance.applyDamage(amount, options);
+    };
+
+    public getComponent<T extends keyof EntityComponentTypeMap>(component: T): EntityComponentTypeMap[T] {
+        return this.instance.getComponent(component) as EntityComponentTypeMap[T];
     };
 };
 
