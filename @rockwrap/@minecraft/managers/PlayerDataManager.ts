@@ -1,6 +1,7 @@
 import { Vector3 } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import type { DynamicPropertyValue } from "./types/DynamicPropertyValue";
+import { ConsoleManager } from "./ConsoleManager";
 
 class PlayerDataManager {
     public readonly identifier: string;
@@ -14,7 +15,7 @@ class PlayerDataManager {
             identifier = new DynamicPropertyManager(name).get() as string;
 
         if (!identifier)
-            throw Error(`Player '${name}' was not registered. Use RockWrap.startUp(); in Main.ts for registery.`);
+            throw ConsoleManager.error(`Player '${name}' was not registered. Use RockWrap.startUp(); in Main.ts for registery.`);
 
         this.identifier = identifier;
     };

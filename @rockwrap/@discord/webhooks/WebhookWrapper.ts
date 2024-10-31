@@ -3,6 +3,7 @@ import { IWebhookContent } from "./interfaces/IWebhookContent";
 import { IEmbedWrapper } from "../embeds/interfaces/IEmbedWrapper";
 import { EmbedWrapper } from "../embeds/EmbedWrapper";
 import { RockWrap } from "../../config";
+import { ConsoleManager } from "../../minecraft";
 
 class WebhookWrapper {
     private constructor() {};
@@ -36,8 +37,8 @@ class WebhookWrapper {
      * ```
      */
     public static sendWebhook(uri: string, { content = "", embeds = [] }: IWebhookContent): void {
-        if (!RockWrap.config["@server"].modules.includes("@minecraft/server-net")) throw new Error("ModuleError: You cannot use WebhookWrapper, if you have not added @minecraft/server-net to you modules.");
-        if (!content && embeds.length === 0) throw new Error("DataError: You must provide content ");
+        if (!RockWrap.config["@server"].modules.includes("@minecraft/server-net")) throw new ConsoleManager.error("ModuleError: You cannot use WebhookWrapper, if you have not added @minecraft/server-net to you modules.");
+        if (!content && embeds.length === 0) throw new ConsoleManager.error("DataError: You must provide content ");
 
         try {
             http.request(

@@ -1,6 +1,7 @@
 import { Entity, world } from "@minecraft/server";
 import { DynamicPropertyManager } from "./DynamicPropertyManager";
 import type { DynamicPropertyValue } from "./types/DynamicPropertyValue";
+import { ConsoleManager } from "./ConsoleManager";
 
 class EntityDataManager {
     private readonly identifier: string;
@@ -13,7 +14,7 @@ class EntityDataManager {
         const entity: Entity | undefined = world.getEntity(identifier)
 
         if (!entity)
-            throw Error(`Entity is not loaded.`);
+            throw ConsoleManager.error(`Entity is not loaded or does not exist.`);
 
         this.identifier = identifier;
     }
