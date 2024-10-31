@@ -7,9 +7,9 @@ import { DynamicPropertyManager } from "../../managers/DynamicPropertyManager";
 const registerPlayers = (): void => {
     AfterEvents.PlayerSpawned(({ player, playerJoined }) => {
         if (!playerJoined) return;
-    
+
         new DynamicPropertyManager(player.name).get(player.identifier);
-        new DynamicPropertyManager(player.identifier).get(player.name);
+        new DynamicPropertyManager(player.identifier).set(player.name);
     });
 };
 
