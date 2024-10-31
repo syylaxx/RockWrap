@@ -8,7 +8,8 @@ import { CallbackType } from "./types/CallbackType";
 
 interface BlockBrokenArgs { readonly block: BlockManager, readonly brokenBlockPermutation: BlockPermutation, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface BlockPlacedArgs { readonly block: BlockManager, readonly player: PlayerManager };
-interface ButtonPushedArgs { readonly block: BlockManager, readonly entity: EntityManager};
+interface ButtonPushedArgs { readonly block: BlockManager, readonly entity: EntityManager };
+interface EntityDiedArgs { readonly damageSource: EntityDamageSource, readonly entity: EntityManager };
 interface EntityHitEntityArgs { readonly entity: EntityManager, readonly hitEntity: EntityManager };
 interface EntityHurtArgs { readonly entity: EntityManager, readonly damageSource: EntityDamageSource, readonly damage: number };
 interface EntityRemovedArgs { readonly entityIdentifier: string, readonly typeId: string };
@@ -41,6 +42,12 @@ const eventsData: CallbackType<any>[] = [
         event: world.afterEvents.buttonPush,
         isSubscribed: false,
         callbacks: [] as Array<(args: ButtonPushedArgs) => void>
+    },
+    {
+        identifier: "EntityDied",
+        event: world.afterEvents.entityDie,
+        isSubscribed: false,
+        callbacks: [] as Array<(args: EntityDiedArgs) => void>
     },
     {
         identifier: "EntityHitEntity",
@@ -135,7 +142,7 @@ const eventsData: CallbackType<any>[] = [
 ];
 
 class AfterEvents {
-    private constructor() {};
+    private constructor() { };
 
     private static subscribe(identifier: string, callback: (arg: any) => void) {
         const eventData = eventsData.find(event => event.identifier === identifier);
@@ -167,9 +174,10 @@ class AfterEvents {
                 getEntityHit,
                 projectile,
                 hitVector,
+                deadEntity,
             } = callback;
 
-            const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
+            const getEntity: Entity = source instanceof Entity ? source : target ?? deadEntity ?? damagingEntity ?? hurtEntity ?? entity;
             const getPlayer: Player = source instanceof Player ? source : sender ?? player;
 
             const properties = {
@@ -194,7 +202,7 @@ class AfterEvents {
                 ...callback,
                 ...properties
             };
-        
+
             for (const eventDataCallback of eventData.callbacks)
                 eventDataCallback(replacedCallback);
         });
@@ -218,7 +226,7 @@ class AfterEvents {
     public static BlockBroken(callback: (args: BlockBrokenArgs) => void): void {
         this.subscribe("BlockBroken", callback);
     };
-    
+
     public static BlockPlaced(callback: (args: BlockPlacedArgs) => void): void {
         this.subscribe("BlockPlaced", callback);
     };
@@ -254,11 +262,11 @@ class AfterEvents {
     public static ItemUsed(callback: (args: ItemUsedArgs) => void): void {
         this.subscribe("ItemUsed", callback);
     };
-    
+
     public static ItemUsedOn(callback: (args: ItemUsedOnArgs) => void): void {
         this.subscribe("ItemUsedOn", callback);
     };
-    
+
     public static MessageSent(callback: (args: MessageSentArgs) => void): void {
         this.subscribe("MessageSent", callback);
     };
