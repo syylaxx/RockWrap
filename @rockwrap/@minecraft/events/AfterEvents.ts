@@ -1,4 +1,4 @@
-import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause, Direction, Vector3, ScriptEventSource } from "@minecraft/server";
+import { world, system, Player, Entity, BlockPermutation, EntityDamageSource, EntityInitializationCause, Direction, Vector3, ScriptEventSource, EntityHitInformation } from "@minecraft/server";
 
 import { PlayerManager } from "../managers/PlayerManager";
 import { BlockManager } from "../managers/BlockManager";
@@ -20,6 +20,7 @@ interface ItemUsedOnArgs { readonly block: BlockManager, readonly blockFace: Dir
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly playerIdentifier: string, readonly playerName: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
+interface ProjectileHitEntityArgs { readonly hitVector: Vector3, readonly locaton: Vector3, readonly projectile: EntityManager, readonly source?: EntityManager, readonly entityInformation: EntityHitInformation };
 interface ScriptEventArgs { readonly id: string, readonly initiator?: EntityManager, readonly message: string, readonly sourceType: ScriptEventSource };
 
 const eventsData: CallbackType<any>[] = [
@@ -114,6 +115,12 @@ const eventsData: CallbackType<any>[] = [
         callbacks: [] as Array<(args: PlayerSpawnedArgs) => void>
     },
     {
+        identifier: "ProjectileHitEntity",
+        event: world.afterEvents.projectileHitEntity,
+        isSubscribed: false,
+        callbacks: [] as Array<(args: ProjectileHitEntityArgs) => void>
+    },
+    {
         identifier: "ScriptEventReceived",
         event: system.afterEvents.scriptEventReceive,
         isSubscribed: false,
@@ -156,7 +163,10 @@ class AfterEvents {
                 playerId,
                 removedEntityId,
                 faceLocation,
-                damageSource
+                damageSource,
+                getEntityHit,
+                projectile,
+                hitVector,
             } = callback;
 
             const getEntity: Entity = source instanceof Entity ? source : target ?? damagingEntity ?? hurtEntity ?? entity;
@@ -170,11 +180,14 @@ class AfterEvents {
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
 
+                entityInformation: getEntityHit(),
                 entityIdentifier: removedEntityId,
                 playerIdentifier: playerId,
                 playerJoined: initialSpawn,
                 faceLocation,
                 damageSource,
+                projectile,
+                hitVector,
             };
 
             const replacedCallback = {
