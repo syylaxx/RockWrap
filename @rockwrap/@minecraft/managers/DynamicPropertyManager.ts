@@ -1,15 +1,5 @@
-import { Vector3, world } from "@minecraft/server";
+import { world } from "@minecraft/server";
 import { DynamicPropertyValue } from "./types/DynamicPropertyValue";
-
-const isADynamicPropertyValue = (value: any): boolean => {
-    return (
-        typeof value === "string" ||
-        typeof value === "number" ||
-        typeof value === "boolean" ||
-        typeof value === "undefined" ||
-        value && typeof value.x === "number" && typeof value.y === "number" && typeof value.z === "number"
-    );
-};
 
 class DynamicPropertyManager {
     private readonly identifier: string;
@@ -30,7 +20,7 @@ class DynamicPropertyManager {
     public get(replaceValue: any = undefined): DynamicPropertyValue {
         if (!world.getDynamicProperty(this.identifier))
             world.setDynamicProperty(this.identifier, replaceValue);
-        
+
         return world.getDynamicProperty(this.identifier);
     };
 
