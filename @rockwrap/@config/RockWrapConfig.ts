@@ -55,7 +55,7 @@ const rockWrapConfiguration = {
     "@console": {
         error: "\x1b[31m[ERROR] ",
         warn: "\x1b[33m[WARN] ",
-        info: "\x1b[314[INFO] ",
+        info: "\x1b[31m[INFO] ",
         log: "\x1b[32m[LOG] "
     }
 };
