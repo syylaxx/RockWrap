@@ -1,24 +1,16 @@
 {
     "name": "rockwrap",
-    "version": "1.0.0",
+    "description": "A Wrapper written in TypeScript for Minecraft Script API.",
+    "version": "1.0.9",
     "author": "syylaxx",
-    "main": "@rockwrap/minecraft.js",
+    "license": "MIT",
     "type": "module",
     "scripts": {
-        "build": "tsc",
-        "start": "node dist/Main.js"
+        "build": "tsc"
     },
     "dependencies": {
         "@minecraft/server": "^1.16.0-beta.1.21.40-stable",
         "@minecraft/server-net": "^1.0.0-beta.1.21.30-stable",
         "@minecraft/server-ui": "^1.4.0-beta.1.21.40-stable"
-    },
-    "files": [
-        "@rockwrap/",
-        "LICENSE",
-        "README.md",
-        "public/",
-        "docs/"
-    ]
-  }
-  
+    }
+}

@@ -12,8 +12,8 @@
         "allowSyntheticDefaultImports": true,
         "moduleResolution": "Node",
 
-        "rootDir": "./",
-        "outDir": "./dist",
+        "rootDir": "./@rockwrap",
+        "outDir": "./@rockwrap-dist",
 
         "declaration": true
     }
