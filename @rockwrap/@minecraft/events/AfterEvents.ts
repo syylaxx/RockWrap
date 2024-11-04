@@ -188,7 +188,7 @@ class AfterEvents {
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
 
-                entityInformation: getEntityHit(),
+                entityInformation: getEntityHit,
                 entityIdentifier: removedEntityId,
                 playerIdentifier: playerId,
                 playerJoined: initialSpawn,
