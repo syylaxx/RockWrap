@@ -11,3 +11,6 @@ export * from "./@minecraft/managers/ItemStackManager";
 export * from "./@minecraft/managers/PlayerDataManager";
 export * from "./@minecraft/managers/PlayerManager";
 export * from "./@minecraft/managers/Vector";
+
+export * from "@minecraft/server";
+export * from "@minecraft/server-ui";
