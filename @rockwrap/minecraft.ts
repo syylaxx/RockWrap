@@ -10,3 +10,4 @@ export * from "./@minecraft/databases/ItemStackDataBase";
 export * from "./@minecraft/managers/ItemStackManager";
 export * from "./@minecraft/managers/PlayerDataManager";
 export * from "./@minecraft/managers/PlayerManager";
+export * from "./@minecraft/managers/Vector";
