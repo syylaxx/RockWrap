@@ -1,4 +1,5 @@
 import { Vector2, Vector3 } from "@minecraft/server";
+import { ConsoleManager } from "./ConsoleManager";
 
 type VectorTypes = Vector2 | Vector3;
 
@@ -56,6 +57,9 @@ class Vector {
      * @returns The resulting vector after addition.
      */
     public add(vector: VectorTypes): VectorTypes {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+        
         for (const coordinate in this.vector) {
             this.vector[coordinate] += vector[coordinate];
         };
@@ -69,6 +73,9 @@ class Vector {
      * @returns The resulting vector after subtraction.
      */
     public subtract(vector: VectorTypes): VectorTypes {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
         for (const coordinate in this.vector) {
             this.vector[coordinate] -= vector[coordinate];
         };
@@ -77,6 +84,9 @@ class Vector {
     };
 
     public multiply(vector: VectorTypes): VectorTypes {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
         for (const coordinate in this.vector) {
             this.vector[coordinate] *= vector[coordinate];
         };
@@ -90,6 +100,9 @@ class Vector {
      * @returns The midpoint vector.
      */
     public middle(vector: VectorTypes): VectorTypes {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
         const result: any = {};
 
         for (const coordinate in this.vector) {
@@ -106,7 +119,10 @@ class Vector {
      * @returns True if the current vector is within the specified range of the given vector; otherwise, false.
      */
     public isInRange(vector: VectorTypes, range: number): boolean {
-        const distance = this.distanceTo(this.vector);
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
+        const distance = this.distanceTo(vector);
 
         return distance <= range;
     };
@@ -117,6 +133,9 @@ class Vector {
      * @returns The distance between the two vectors.
      */
     public distanceTo(vector: VectorTypes): number {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
         let sum = 0;
 
         for (const coordinate in this.vector) {
@@ -162,6 +181,9 @@ class Vector {
      * @returns True if the vectors are equal, false otherwise.
      */
     public equalsTo(vector: VectorTypes): boolean {
+        if (Object.keys(vector).length !== Object.keys(this.vector).length)
+            throw new TypeError("Vector 2 does not overlap with Vector 3!")
+
         for (const coordinate in this.vector) {
             if (this.vector[coordinate] !== vector[coordinate]) return false;
         };
