@@ -279,6 +279,10 @@ class AfterEvents {
         this.subscribe("PlayerSpawned", callback);
     };
 
+    public static ProjectileHitEntity(callback: (args: ProjectileHitEntityArgs) => void): void {
+        this.subscribe("ProjectileHitEntity", callback);
+    };
+
     public static ScriptEventReceived(callback: (args: ScriptEventArgs) => void): void {
         this.subscribe("ScriptEventReceived", callback);
     };
