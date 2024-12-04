@@ -16,9 +16,11 @@ interface EntityRemovedArgs { readonly entityIdentifier: string, readonly typeId
 interface EntitySpawnedArgs { readonly cause: EntityInitializationCause, readonly entity: EntityManager }
 interface InteractedWithBlockArgs { readonly block: BlockManager, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
 interface InteractedWithEntityArgs { readonly entity: EntityManager, readonly player: PlayerManager };
-interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager };
-interface ItemUsedOnArgs { readonly block: BlockManager, readonly blockFace: Direction, readonly faceLocation: Vector3, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
+interface ItemInteractedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager };
+interface ItemInteractedOnArgs { readonly block: BlockManager, readonly blockFace: Direction, readonly faceLocation: Vector3, readonly itemStack: ItemStackManager, readonly player: PlayerManager };
+interface ItemUsedArgs { readonly itemStack: ItemStackManager, readonly player: PlayerManager, readonly useDuration: number };
 interface MessageSentArgs { readonly message: string, readonly player: PlayerManager };
+interface OnPlayerTickArgs { readonly player: PlayerManager };
 interface PlayerLeftArgs { readonly playerIdentifier: string, readonly playerName: string };
 interface PlayerSpawnedArgs { readonly playerJoined: boolean, readonly player: PlayerManager };
 interface ProjectileHitEntityArgs { readonly hitVector: Vector3, readonly locaton: Vector3, readonly projectile: EntityManager, readonly source?: EntityManager, readonly entityInformation: EntityHitInformation };
@@ -86,22 +88,34 @@ const eventsData: CallbackType<any>[] = [
         callbacks: [] as Array<(args: InteractedWithEntityArgs) => void>
     },
     {
-        identifier: "ItemUsed",
+        identifier: "ItemInteracted",
         event: world.afterEvents.itemUse,
         isSubscribed: false,
-        callbacks: [] as Array<(args: ItemUsedArgs) => void>
+        callbacks: [] as Array<(args: ItemInteractedArgs) => void>
     },
     {
-        identifier: "ItemUsedOn",
+        identifier: "ItemInteractedOn",
         event: world.afterEvents.itemUseOn,
         isSubscribed: false,
-        callbacks: [] as Array<(args: ItemUsedOnArgs) => void>
+        callbacks: [] as Array<(args: ItemInteractedOnArgs) => void>
+    },
+    {
+        identifier: "ItemUsed",
+        event: world.afterEvents.itemReleaseUse,
+        isSubscribed: false,
+        callbacks: [] as Array<(args: ItemUsedArgs) => void>
     },
     {
         identifier: "MessageSent",
         event: world.afterEvents.chatSend,
         isSubscribed: false,
         callbacks: [] as Array<(args: MessageSentArgs) => void>
+    },
+    {
+        identifier: "OnPlayerTick",
+        event: undefined,
+        isSubscribed: false,
+        callbacks: [] as Array<(args: OnPlayerTickArgs) => void>
     },
     {
         identifier: "OnTick",
@@ -171,10 +185,10 @@ class AfterEvents {
                 removedEntityId,
                 faceLocation,
                 damageSource,
-                getEntityHit,
                 projectile,
                 hitVector,
                 deadEntity,
+                useDuration,
             } = callback;
 
             const getEntity: Entity = source instanceof Entity ? source : target ?? deadEntity ?? damagingEntity ?? hurtEntity ?? entity;
@@ -188,14 +202,16 @@ class AfterEvents {
                 itemStack: itemStack ? new ItemStackManager(itemStack) : undefined,
                 player: getPlayer ? new PlayerManager(getPlayer) : undefined,
 
-                entityInformation: getEntityHit,
+                entityInformation: callback.getEntityHit ? callback.getEntityHit() : undefined,
                 entityIdentifier: removedEntityId,
                 playerIdentifier: playerId,
                 playerJoined: initialSpawn,
+                source: eventData.event === world.afterEvents.projectileHitEntity ? new EntityManager(source) : undefined,
                 faceLocation,
                 damageSource,
                 projectile,
                 hitVector,
+                useDuration,
             };
 
             const replacedCallback = {
@@ -205,6 +221,28 @@ class AfterEvents {
 
             for (const eventDataCallback of eventData.callbacks)
                 eventDataCallback(replacedCallback);
+        });
+    };
+
+    public static OnPlayerTick(callback: (args: OnPlayerTickArgs) => void, delay: number = 1): void {
+        const eventData = eventsData.find(event => event.identifier === "OnPlayerTick")
+
+        eventData.callbacks.push(callback);
+
+        if (eventData.isSubscribed) return;
+
+        eventData.isSubscribed = true;
+
+        AfterEvents.OnTick(() => {
+            for (const { name } of world.getPlayers()) {
+                const player = new PlayerManager(name);
+
+                for (const interval of eventData.callbacks as Array<(args: OnPlayerTickArgs) => void>) {
+                    if (system.currentTick % delay !== 0) continue;
+
+                    interval({ player });
+                };
+            };
         });
     };
 
@@ -259,12 +297,16 @@ class AfterEvents {
         this.subscribe("InteractedWithEntity", callback);
     };
 
-    public static ItemUsed(callback: (args: ItemUsedArgs) => void): void {
-        this.subscribe("ItemUsed", callback);
+    public static ItemInteracted(callback: (args: ItemInteractedArgs) => void): void {
+        this.subscribe("ItemInteracted", callback);
     };
 
-    public static ItemUsedOn(callback: (args: ItemUsedOnArgs) => void): void {
-        this.subscribe("ItemUsedOn", callback);
+    public static ItemInteractedOn(callback: (args: ItemInteractedOnArgs) => void): void {
+        this.subscribe("ItemInteractedOn", callback);
+    };
+
+    public static ItemUsed(callback: (args: ItemUsedArgs) => void): void {
+        this.subscribe("ItemUsed", callback);
     };
 
     public static MessageSent(callback: (args: MessageSentArgs) => void): void {
