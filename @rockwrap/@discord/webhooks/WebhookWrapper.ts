@@ -6,7 +6,7 @@ import { RockWrap } from "../../config";
 import { ConsoleManager } from "../../minecraft";
 
 class WebhookWrapper {
-    private constructor() {};
+    private constructor() { };
 
     /**
      * Send webhooks on Discord channels.
@@ -53,9 +53,10 @@ class WebhookWrapper {
                         new HttpHeader("Accept", "application/json")
                     ])
 
+                    //@ts-ignore
                     .setMethod(HttpRequestMethod.Post)
             );
-        } catch {};
+        } catch { };
     };
 };
 
