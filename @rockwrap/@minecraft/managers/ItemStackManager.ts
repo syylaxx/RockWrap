@@ -1,7 +1,7 @@
 import { ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
 import { ItemProperty, IItemStackObject } from "../databases/interfaces/ItemStackObject";
 
-class ItemStackManager extends ItemStack{
+class ItemStackManager extends ItemStack {
     private durabilityComponent: ItemDurabilityComponent;
 
     /**
@@ -71,7 +71,7 @@ class ItemStackManager extends ItemStack{
 
         const dynamicProperties = this.getDynamicPropertyIds()
             .map((id): ItemProperty => ([
-                id, 
+                id,
                 getDynamicProperty(id)
             ]));
 
@@ -89,9 +89,9 @@ class ItemStackManager extends ItemStack{
     };
 
     public static getManager(object: IItemStackObject): ItemStackManager {
-        const { 
+        const {
             typeId, nameTag, amount, damage, lockMode, keepOnDeath, dynamicProperties,
-            
+
             lore,
             canDestroy,
             canPlaceOn,
@@ -104,7 +104,7 @@ class ItemStackManager extends ItemStack{
         itemStack.lockMode = lockMode;
         itemStack.keepOnDeath = keepOnDeath;
 
-        dynamicProperties.forEach((property)=>{
+        dynamicProperties.forEach((property) => {
             itemStack.setDynamicProperty(...property);
         });
 
