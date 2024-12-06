@@ -1,6 +1,6 @@
 import { ItemStack } from "@minecraft/server";
 import { DynamicPropertyManager } from "../managers/DynamicPropertyManager";
-import { IItemStackObject } from "./interfaces/ItemStackObject";
+import { ItemStackObject } from "./interfaces/ItemStackObject";
 import { ItemStackManager } from "../managers/ItemStackManager";
 
 class ItemStackDataBase {
@@ -29,7 +29,7 @@ class ItemStackDataBase {
      * @returns Item as ItemStackManager. 
      */
     public getItemStack(): ItemStackManager {
-        const object = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as IItemStackObject;
+        const object = JSON.parse(new DynamicPropertyManager(this.identifier).get() as string) as ItemStackObject;
 
         return ItemStackManager.getManager(object)
     };

@@ -1,5 +1,6 @@
-import { ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
-import { ItemProperty, IItemStackObject } from "../databases/interfaces/ItemStackObject";
+import { Enchantment, EnchantmentType, ItemDurabilityComponent, ItemEnchantableComponent, ItemStack } from "@minecraft/server";
+import { ItemProperty, ItemStackObject } from "../databases/interfaces/ItemStackObject";
+import { ConsoleManager } from "./ConsoleManager";
 
 class ItemStackManager extends ItemStack {
     private durabilityComponent: ItemDurabilityComponent;
@@ -16,10 +17,10 @@ class ItemStackManager extends ItemStack {
      */
     public constructor(itemStack: ItemStack | string) {
         if (!(itemStack instanceof ItemStack) && typeof itemStack !== "string")
-            throw new Error(`ItemStack was not defined correctly!`);
+            throw ConsoleManager.error(`ItemStack was not defined correctly!`);
 
         if (typeof itemStack === "string" && !new ItemStack(itemStack)?.typeId)
-            throw new Error(`TypeId : '${itemStack}' does not exist!`);
+            throw ConsoleManager.error(`TypeId : '${itemStack}' does not exist!`);
 
         super(
             itemStack instanceof ItemStack ? itemStack.typeId : itemStack as string,
@@ -28,6 +29,21 @@ class ItemStackManager extends ItemStack {
 
         this.durabilityComponent = this.getComponent("durability") as ItemDurabilityComponent;
         this.maxDurability = this.durabilityComponent ? this.durabilityComponent.maxDurability : 0;
+
+        if (!(itemStack instanceof ItemStack)) return;
+
+        this.nameTag = itemStack.nameTag;
+        this.lockMode = itemStack.lockMode;
+        this.keepOnDeath = itemStack.keepOnDeath;
+        this.setLore(itemStack.getLore());
+        this.durabilityComponent ? this.durabilityComponent.damage = itemStack.getComponent("durability").damage : null;
+        this.getComponent("enchantable")?.addEnchantments(itemStack.getComponent("enchantable")?.getEnchantments());
+        this.setCanDestroy(itemStack.getCanDestroy());
+        this.setCanPlaceOn(itemStack.getCanPlaceOn());
+
+        itemStack.getDynamicPropertyIds().forEach((property) => {
+            this.setDynamicProperty(property, itemStack.getDynamicProperty(property));
+        });
     };
 
     /**
@@ -56,7 +72,7 @@ class ItemStackManager extends ItemStack {
         this.durabilityComponent.damage = this.maxDurability - value;
     };
 
-    public getObject(): IItemStackObject {
+    public getObject(): ItemStackObject {
         const {
             typeId,
             amount,
@@ -66,8 +82,8 @@ class ItemStackManager extends ItemStack {
             getDynamicProperty,
         } = this
 
-        const enchantableComponent = this.getComponent("enchantable") as ItemEnchantableComponent;
-        const durabilityComponent = this.getComponent("durability") as ItemDurabilityComponent;
+        const enchantableComponent = this.getComponent("enchantable");
+        const durabilityComponent = this.getComponent("durability");
 
         const dynamicProperties = this.getDynamicPropertyIds()
             .map((id): ItemProperty => ([
@@ -75,7 +91,7 @@ class ItemStackManager extends ItemStack {
                 getDynamicProperty(id)
             ]));
 
-        const object: IItemStackObject = {
+        const object: ItemStackObject = {
             amount, dynamicProperties, keepOnDeath, lockMode, nameTag, typeId,
 
             damage: durabilityComponent?.damage,
@@ -88,7 +104,7 @@ class ItemStackManager extends ItemStack {
         return object;
     };
 
-    public static getManager(object: IItemStackObject): ItemStackManager {
+    public static getManager(object: ItemStackObject): ItemStackManager {
         const {
             typeId, nameTag, amount, damage, lockMode, keepOnDeath, dynamicProperties,
 
@@ -110,9 +126,11 @@ class ItemStackManager extends ItemStack {
 
         itemStack.setLore(lore);
 
-        itemStack.getComponent("durability") ? (itemStack.getComponent("durability") as ItemDurabilityComponent).damage = damage : null;
+        itemStack.getComponent("durability") ? itemStack.getComponent("durability").damage = damage : null;
 
-        (itemStack.getComponent("enchantable") as ItemEnchantableComponent)?.addEnchantments(enchantments);
+        const enchantmentArray = enchantments.map(({ type, level }) => { return { type: new EnchantmentType(type.id), level } as Enchantment });
+
+        itemStack.getComponent("enchantable")?.addEnchantments(enchantmentArray);
 
         itemStack.setCanDestroy(canDestroy);
         itemStack.setCanPlaceOn(canPlaceOn);
